@@ -2,14 +2,45 @@
 
 ## Project Status: Unfinished
 
+The NTAG 424 DNA tag are using a feature that was available only with the Mifare DESFire EV3 tags.
+
+Here is an excerpt from the datasheet: 
+*Using AES-128 cryptography, the tag generates a unique NFC authentication message 
+(SUN) each time it is being tapped. An NFC mobile device reads this tap-unique URL 
+with the SUN authentication message, sends it to the host where tag and message 
+authentication take place, and returns the verification result. The SUN authentication 
+mechanism is working on Android without a dedicated application and from iOS11 
+onwards using an application. This way, NTAG 424 DNA TT offers tag authentication, 
+as well as data assurances on authenticity, integrity and even confidentiality, while also 
+securing physical tag presence.*
+
+In the documentation you will find two namings for the same feature:
+- Secure Unique Number ("SUN")
+- Secure Dynamic Message ("SDM")
 
 ## Technical information's about NTAG 424 DNA tags
 
-
+In this document I'm always writing "NTAG 424 DNA" but there are "NTAG 424 DNA Tag Tamper" available as 
+well. The SUN/SDM feature is working on both tag types.
 
 NTAG 424 DNA datasheet: https://www.nxp.com/docs/en/data-sheet/NT4H2421Tx.pdf
 
 NTAG 424 DNA and NTAG 424 DNA TagTamper features and hints: https://www.nxp.com/docs/en/application-note/AN12196.pdf
+
+The tag has a predefined application and 3 predefined Standard Data files:
+- File 01h: 32 bytes size, suitable for the "Capability Container" data (necessary for NDEF messages). The Communication mode is **Plain Communication**.
+- File 02h: 256 bytes size, suitable for long NDEF messages. The Communication mode is **Plain Communication**.
+- File 03h: 128 bytes size, suitable for protected data. The Communication mode is **Encrypted Communication**.
+
+The application is setup with **5 application keys** that are of AES-128 size (meaning 16 bytes). The default (fabric) keys are (in hex notation):
+```plaintext
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+```
+
+The tags are using the **AES authentication** on default (fabric), but the authentication scheme can get changed to **LRP authentication** - this is an 
+one-time-change that cannot get reversed.
+
+This app can work with both authentication modes, but does not have an option to change the mode from AES to LRP.
 
 ### Default content of file 1 (Capability Container)
 
