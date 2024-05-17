@@ -40,7 +40,7 @@ byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003A00340406E10401000000");
 ```
 
-### Default file access rights
+### Default file access rights (fabric settings)
 
 | **File Nr** | **Read Access** | **Write Access** | **Read & Write Access** |
 |:-----------:|:---------------:|:----------------:|:-----------------------:|
@@ -48,9 +48,19 @@ byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003
 |  File 02h   |       Eh        |        Eh        |           Eh            |
 |  File 03h   |       2h        |        3h        |           3h            |
 
+### Modified file access rights
 
+| **File Nr** | **Read Access** | **Write Access** | **Read & Write Access** |
+|:-----------:|:---------------:|:----------------:|:-----------------------:|
+|  File 01h   |       Eh        |        0h        |           0h            |
+|  File 02h   |       Eh        |        1h        |           1h            |
+|  File 03h   |       2h        |        3h        |           3h            |
 
+**SDM Meta Read Access Key**: 02h
 
+**SDM File Read Access Key**: 03h
+
+**SDM Counter Retrieve Access Key**: 04h
 
 ## Dependencies
 
