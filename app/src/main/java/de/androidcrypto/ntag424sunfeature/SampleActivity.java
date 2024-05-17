@@ -31,9 +31,9 @@ import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
 
 import java.io.IOException;
 
-public class PrepareActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class SampleActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = PrepareActivity.class.getSimpleName();
+    private static final String TAG = SampleActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
 
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -48,7 +48,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_prepare);
+        setContentView(R.layout.activity_sample);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -235,7 +235,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(PrepareActivity.this, MainActivity.class);
+                Intent intent = new Intent(SampleActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;
