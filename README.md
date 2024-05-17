@@ -28,9 +28,9 @@ NTAG 424 DNA datasheet: https://www.nxp.com/docs/en/data-sheet/NT4H2421Tx.pdf
 NTAG 424 DNA and NTAG 424 DNA TagTamper features and hints: https://www.nxp.com/docs/en/application-note/AN12196.pdf
 
 The tag has a predefined application and 3 predefined Standard Data files:
-- File 01h: 32 bytes size, suitable for the "Capability Container" data (necessary for NDEF messages). The Communication mode is **Plain Communication**.
-- File 02h: 256 bytes size, suitable for long NDEF messages. The Communication mode is **Plain Communication**.
-- File 03h: 128 bytes size, suitable for protected data. The Communication mode is **Encrypted Communication**.
+- **File 01h**: 32 bytes size, suitable for the "Capability Container" data (necessary for NDEF messages). The Communication mode is **Plain Communication**.
+- **File 02h**: 256 bytes size, suitable for long NDEF messages. The Communication mode is **Plain Communication**.
+- **File 03h**: 128 bytes size, suitable for protected data. The Communication mode is **Encrypted Communication**.
 
 The application is setup with **5 application keys** that are of AES-128 size (meaning 16 bytes). The default (fabric) keys are (in hex notation):
 ```plaintext
