@@ -1,5 +1,8 @@
 # NTAG 424 DNA Secure Unique Number ("SUN") Feature
 
+https://medium.com/@androidcrypto/demystify-the-secure-unique-number-feature-with-ntag-424-dna-nfc-tags-android-java-b947c482913c
+
+
 ## Project Status: Unfinished
 
 The NTAG 424 DNA tag are using a feature that was available only with the Mifare DESFire EV3 tags.
@@ -86,6 +89,11 @@ the parameter "uid", "ctr" and "cmac" are filled with placeholders ("**...") so 
 is giving an error message ("400 Bad Request: Failed to decode parameters").
 
 If the SUN/SDM feature is enabled you will get the "real" tag data and a positive test result.
+
+```plaintext
+https://sdm.nfcdeveloper.com/tagpt?uid=049F50824F1390&ctr=000001&cmac=2446E527C37E073A
+```
+
 
 Btw.: the named website is run by "Arx Research, Inc.". The source code is available here: https://github.com/nfc-developer/sdm-backend.
 
