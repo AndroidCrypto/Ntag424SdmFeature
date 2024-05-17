@@ -3,6 +3,8 @@
     <style name="Base.Theme.Ntag424SunFeature" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorStatusBar</item>
     </style>
 
     <style name="Theme.Ntag424SunFeature" parent="Base.Theme.Ntag424SunFeature" />

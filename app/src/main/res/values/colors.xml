@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorStatusBar">#1E88E5</color>
+    <color name="light_background_green">#C0FFC0</color>
+    <color name="light_background_red">#FFB5B5</color>
+    <color name="application_color_light_background_orange">#FFB74D</color>
+    <color name="application_color_light_background_dark_orange">#FB7013</color>
+    <color name="application_color_light_background_green">#81C784</color>
+    <color name="application_color_background_red">#FF0000</color>
 </resources>
