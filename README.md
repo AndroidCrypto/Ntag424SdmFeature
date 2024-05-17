@@ -15,8 +15,8 @@ as well as data assurances on authenticity, integrity and even confidentiality, 
 securing physical tag presence.*
 
 In the documentation you will find two namings for the same feature:
-- Secure Unique Number ("SUN")
-- Secure Dynamic Message ("SDM")
+- **Secure Unique Number** ("SUN")
+- **Secure Dynamic Message** ("SDM")
 
 ## Technical information's about NTAG 424 DNA tags
 
