@@ -42,9 +42,9 @@ byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003
 
 ### Default file access rights
 
-|:--:|:-----|:---:|
-
-| File | Read Access | Write Access |
+| **File Nr** | **Read Access** | **Write Access** | **Read & Write Access** |
+|:-----------:|:---------------:|:----------------:|:----------------:|
+| File |       Eh        |        0h        | 0h|
 
 
 
