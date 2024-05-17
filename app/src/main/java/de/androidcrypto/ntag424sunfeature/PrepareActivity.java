@@ -1,6 +1,12 @@
 package de.androidcrypto.ntag424sunfeature;
 
+import static net.bplearning.ntag424.constants.Ntag424.CC_FILE_NUMBER;
+import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +31,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
+import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
 import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
+import net.bplearning.ntag424.sdm.NdefTemplateMaster;
+import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
 
@@ -194,7 +203,10 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                      * 4) Write an URL template to file 02
                      */
 
+                    // authentication
+                    boolean isLrpAuthenticationMode = false;
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                    //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
@@ -203,6 +215,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                         if (success) {
                             writeToUiAppend(output, "LRP Authentication SUCCESS");
+                            isLrpAuthenticationMode = true;
                         } else {
                             writeToUiAppend(output, "LRP Authentication FAILURE");
                             writeToUiAppend(output, "Authentication not possible, Operation aborted");
@@ -210,8 +223,38 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         }
                     }
 
+                    // write CC to file 01
+                    try {
+                        WriteData.run(dnaC, CC_FILE_NUMBER, NDEF_FILE_01_CAPABILITY_CONTAINER, 0);
+                    } catch (IOException e) {
+                        Log.e(TAG, "writeData IOException: " + e.getMessage());
+                        writeToUiAppend(output, "File 01h writeDataIOException: " + e.getMessage());
+                        writeToUiAppend(output, "Writing the Capability Container FAILURE, Operation aborted");
+                        return;
+                    }
+                    writeToUiAppend(output, "File 01h Writing the Capability Container SUCCESS");
 
-
+                    // write URL template to file 02
+                    SDMSettings sdmSettings = new SDMSettings();
+                    sdmSettings.sdmEnabled = false; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
+                    sdmSettings.sdmMetaReadPerm = ACCESS_EVERYONE; // Set to a key to get encrypted PICC data
+                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypt FileData
+                    sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
+                    sdmSettings.sdmOptionEncryptFileData = false;
+                    byte[] ndefRecord;
+                    NdefTemplateMaster master = new NdefTemplateMaster();
+                    master.usesLRP = isLrpAuthenticationMode;
+                    master.fileDataLength = 0; // no (encrypted) file data
+                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                    try {
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
+                    } catch (IOException e) {
+                        Log.e(TAG, "writeData IOException: " + e.getMessage());
+                        writeToUiAppend(output, "File 02h writeDataIOException: " + e.getMessage());
+                        writeToUiAppend(output, "Writing the NDEF URL Template FAILURE, Operation aborted");
+                        return;
+                    }
+                    writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
 
 
                 } catch (IOException e) {

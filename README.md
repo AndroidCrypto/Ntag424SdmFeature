@@ -40,6 +40,24 @@ byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003A00340406E10401000000");
 ```
 
+### NDEF URL-template (File 02)
+
+This URL is written in File 02h as template for a SUN/SDM message with **Plain Tag UID** and **Plain Read Counter**, 
+additional the **CMAC** of the data.
+
+```plaintext
+https://sdm.nfcdeveloper.com/tagpt?uid=**************&ctr=******&cmac=****************
+```
+
+When the prepared tag is tapped to a NFC reader (on a smartphone) the system will recognise that the NDEF data are an URL, 
+so the system will forward the data to a browser and open the website **https://sdm.nfcdeveloper.com/tagpt**. As you can see 
+the parameter "uid", "ctr" and "cmac" are filled with placeholders ("**...") so the "Secure Dynamic Messaging Backend Server Demo" 
+is giving an error message ("400 Bad Request: Failed to decode parameters").
+
+If the SUN/SDM feature is enabled you will get the "real" tag data and a positive test result.
+
+Btw.: the named website is run by "Arx Research, Inc.". The source code is available here: https://github.com/nfc-developer/sdm-backend.
+
 ### Default file access rights (fabric settings)
 
 | **File Nr** | **Read Access** | **Write Access** | **Read & Write Access** |
