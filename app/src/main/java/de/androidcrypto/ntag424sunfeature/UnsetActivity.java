@@ -5,7 +5,6 @@ import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
 import android.content.Context;
@@ -31,6 +30,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
+import net.bplearning.ntag424.command.ChangeFileSettings;
+import net.bplearning.ntag424.command.FileSettings;
+import net.bplearning.ntag424.command.GetFileSettings;
 import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
@@ -40,9 +42,9 @@ import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
 
-public class PrepareActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class UnsetActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = PrepareActivity.class.getSimpleName();
+    private static final String TAG = UnsetActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
 
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -60,7 +62,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_prepare);
+        setContentView(R.layout.activity_unset);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -182,7 +184,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
     }
 
     private void runWorker() {
-        Log.d(TAG, "PrepareActivity Worker");
+        Log.d(TAG, "UnsetActivity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -202,8 +204,8 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                      * These steps are running - assuming that all keys are 'default' keys filled with 16 00h values
                      * 1) Authenticate with Application Key 00h in AES mode
                      * 2) If the authentication in AES mode fails try to authenticate in LRP mode
-                     * 3) Write the modified Capability Container content to file 01 (Read Only Access to file 02 = NDEF file)
-                     * 4) Write an URL template to file 02
+                     * 3) Write the default Capability Container content to file 01
+                     * 4) Clear the file 02 (fill the 256 bytes with 00h)
                      */
 
                     // authentication
@@ -228,7 +230,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
 
                     // write CC to file 01
                     try {
-                        WriteData.run(dnaC, CC_FILE_NUMBER, NDEF_FILE_01_CAPABILITY_CONTAINER_R, 0);
+                        WriteData.run(dnaC, CC_FILE_NUMBER, NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT, 0);
                     } catch (IOException e) {
                         Log.e(TAG, "writeData IOException: " + e.getMessage());
                         writeToUiAppend(output, "File 01h writeDataIOException: " + e.getMessage());
@@ -237,28 +239,63 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                     }
                     writeToUiAppend(output, "File 01h Writing the Capability Container SUCCESS");
 
-                    // write URL template to file 02
-                    SDMSettings sdmSettings = new SDMSettings();
-                    sdmSettings.sdmEnabled = false; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
-                    sdmSettings.sdmMetaReadPerm = ACCESS_EVERYONE; // Set to a key to get encrypted PICC data
-                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypt FileData
-                    sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
-                    sdmSettings.sdmOptionEncryptFileData = false;
-                    byte[] ndefRecord;
-                    NdefTemplateMaster master = new NdefTemplateMaster();
-                    master.usesLRP = isLrpAuthenticationMode;
-                    master.fileDataLength = 0; // no (encrypted) file data
-                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                    // Clear the file 02 (fill the 256 bytes with 00h)
+                    FileSettings fileSettings02 = null;
                     try {
-                        WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
-                    } catch (IOException e) {
-                        Log.e(TAG, "writeData IOException: " + e.getMessage());
-                        writeToUiAppend(output, "File 02h writeDataIOException: " + e.getMessage());
-                        writeToUiAppend(output, "Writing the NDEF URL Template FAILURE, Operation aborted");
+                        fileSettings02 = GetFileSettings.run(dnaC, NDEF_FILE_NUMBER);
+                    } catch (Exception e) {
+                        Log.e(TAG, "getFileSettings File 02 Exception: " + e.getMessage());
+                        writeToUiAppend(output, "getFileSettings File 02 Exception: " + e.getMessage());
+                    }
+                    if (fileSettings02 == null) {
+                        Log.e(TAG, "getFileSettings File 02 Error, Operation aborted");
+                        writeToUiAppend(output, "getFileSettings File 02 Error, Operation aborted");
                         return;
                     }
-                    writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
+                    // new settings
+                    SDMSettings sdmSettings = new SDMSettings();
+                    sdmSettings.sdmEnabled = false; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
+                    sdmSettings.sdmMetaReadPerm = ACCESS_NONE; // Set to a key to get encrypted PICC data
+                    sdmSettings.sdmFileReadPerm = ACCESS_NONE;  // Used to create the MAC and Encrypt FileData
+                    sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
+                    sdmSettings.sdmOptionEncryptFileData = false;
+                    fileSettings02.sdmSettings = sdmSettings;
+                    fileSettings02.readWritePerm = ACCESS_EVERYONE;
+                    fileSettings02.changePerm = ACCESS_KEY0;
+                    fileSettings02.readPerm = ACCESS_EVERYONE;
+                    fileSettings02.writePerm = ACCESS_EVERYONE;
 
+                    try {
+                    ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
+                    } catch (IOException e) {
+                        Log.e(TAG, "ChangeFileSettings IOException: " + e.getMessage());
+                        writeToUiAppend(output, "ChangeFileSettings File 02 Error, Operation aborted");
+                        return;
+                    }
+
+                    // writing blanks to the file to clear, running in 6 writing sequences
+                    byte[] bytes51Blank = new byte[51];
+                    byte[] bytes01Blank = new byte[1];
+                    try {
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, bytes51Blank.clone(), 51 * 0);
+                        Log.d(TAG, "Clearing File 02 done part 1");
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, bytes51Blank.clone(), 51 * 1);
+                        Log.d(TAG, "Clearing File 02 done part 2");
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, bytes51Blank.clone(), 51 * 2);
+                        Log.d(TAG, "Clearing File 02 done part 3");
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, bytes51Blank.clone(), 51 * 3);
+                        Log.d(TAG, "Clearing File 02 done part 4");
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, bytes51Blank.clone(), 51 * 4);
+                        Log.d(TAG, "Clearing File 02 done part 5");
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, bytes01Blank.clone(), 51 * 5);
+                        Log.d(TAG, "Clearing File 02 done part 6");
+                    } catch (IOException e) {
+                        Log.e(TAG, "writeData IOException: " + e.getMessage());
+                        writeToUiAppend(output, "File 02h Clearing writeDataIOException: " + e.getMessage());
+                        writeToUiAppend(output, "Clearing the File 02 FAILURE, Operation aborted");
+                        return;
+                    }
+                    writeToUiAppend(output, "File 02h Clearing SUCCESS");
 
                 } catch (IOException e) {
                     Log.e(TAG, "Exception: " + e.getMessage());
@@ -281,7 +318,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(PrepareActivity.this, MainActivity.class);
+                Intent intent = new Intent(UnsetActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;

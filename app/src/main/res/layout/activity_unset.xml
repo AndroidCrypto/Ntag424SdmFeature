@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PrepareActivity">
+    tools:context=".UnsetActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="1 Prepare the tag for NDEF operations"
+                android:text="5 Unset the SUN feature"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Write the Capability Container and URL template"
+                android:text="Write the default Capability Container and clear file 2"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the modified Capability Container (CC) to file 1 and the URL template to file 2 on the tag. Assuming that the files are writable after an authentication with Default Keys (Write Access Key is '0h', 16 * '00h')"
+                android:text="Write the default Capability Container (CC) to file 1 and clear the file 2 on the tag. Assuming that the files are writable after an authentication with Default Keys (Write Access Key is '0h', 16 * '00h')"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />

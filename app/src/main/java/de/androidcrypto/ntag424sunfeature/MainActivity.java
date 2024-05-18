@@ -31,7 +31,7 @@ import java.io.OutputStreamWriter;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Button menu1Prepare;
+    private Button menu1Prepare, menu5Unset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         menu1Prepare = findViewById(R.id.btnMenu1Prepare);
+        menu5Unset = findViewById(R.id.btnMenu5Unset);
 
 
         menu1Prepare.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+        menu5Unset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "menu5Unset");
+                Intent intent = new Intent(MainActivity.this, UnsetActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

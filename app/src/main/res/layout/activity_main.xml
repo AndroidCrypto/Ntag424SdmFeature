@@ -60,7 +60,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the Capability Container (CC) to file 1 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:text="Write the Capability Container (CC) to file 1 and an URL template to file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -74,6 +74,52 @@
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/application_color_light_background_green"
                 android:text="Prepare the tag for NDEF operations" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
+
+            <TextView
+                android:id="@+id/tvMenu5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="5 Unset the SUN Feature (fabric settings)"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMenu5Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Write the default Capability Container (CC) to file 1 and clear file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/btnMenu5Unset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/application_color_light_background_green"
+                android:text="Unset the SUN feature (fabric settings)" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"

@@ -18,6 +18,10 @@
         <activity
             android:name=".PrepareActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".UnsetActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

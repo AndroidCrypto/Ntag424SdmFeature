@@ -63,15 +63,22 @@ delivery it will hold following content:
 – NDEF-File File Size = 0100h, i.e. 256 bytes
 – NDEF-File READ Access Condition = 00h, i.e. READ access granted without any security
 – NDEF-File WRITE Access Condition = 00h, i.e. WRITE access granted without any security
+  or NDEF-File WRITE Access Condition = FFh, i.e. NO WRITE access, Read Only
 ```
 
 This content is written to the  file 1:
 
 ```plaintext
+Default (fabric):
+byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000");
 
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010000ff0406E10401000000");
 
+Original CC with Read and Write Access
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003A00340406E10401000000");
+
+Modified CC with Read Only Access
+byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003A00340406E104010000FF");
 ```
 
 ### NDEF URL-template (File 02)
