@@ -25,6 +25,9 @@
             android:name=".EncryptedSunActivity"
             android:exported="false" />
         <activity
+            android:name=".EncryptedFileSunActivity"
+            android:exported="false" />
+        <activity
             android:name=".UnsetActivity"
             android:exported="false" />
         <activity

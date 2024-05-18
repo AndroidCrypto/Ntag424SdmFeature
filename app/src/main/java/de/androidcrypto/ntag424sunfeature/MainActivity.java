@@ -31,7 +31,7 @@ import java.io.OutputStreamWriter;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Button menu1Prepare, menu2PlaintextSun, menu3EncryptedSun, menu5Unset;
+    private Button menu1Prepare, menu2PlaintextSun, menu3EncryptedSun, menu4EncryptedFileSun, menu5Unset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
         menu1Prepare = findViewById(R.id.btnMenu1Prepare);
         menu2PlaintextSun = findViewById(R.id.btnMenu2PlaintextSun);
         menu3EncryptedSun = findViewById(R.id.btnMenu3EncryptedSun);
+        menu4EncryptedFileSun = findViewById(R.id.btnMenu4EncryptedFileSun);
         menu5Unset = findViewById(R.id.btnMenu5Unset);
-
 
         menu1Prepare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "menu1Prepare");
+                Log.d(TAG, "menu1PrepareSun");
                 Intent intent = new Intent(MainActivity.this, PrepareActivity.class);
                 startActivity(intent);
             }
@@ -74,8 +74,17 @@ public class MainActivity extends AppCompatActivity {
         menu3EncryptedSun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "menu2EncryptedSun");
+                Log.d(TAG, "menu3EncryptedSun");
                 Intent intent = new Intent(MainActivity.this, EncryptedSunActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        menu4EncryptedFileSun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "menu4EncryptedFileSun");
+                Intent intent = new Intent(MainActivity.this, EncryptedFileSunActivity.class);
                 startActivity(intent);
             }
         });
@@ -83,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         menu5Unset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "menu5Unset");
+                Log.d(TAG, "menu5UnsetSun");
                 Intent intent = new Intent(MainActivity.this, UnsetActivity.class);
                 startActivity(intent);
             }
