@@ -31,7 +31,7 @@ import java.io.OutputStreamWriter;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Button menu1Prepare, menu5Unset;
+    private Button menu1Prepare, menu2PlaintextSun, menu5Unset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         menu1Prepare = findViewById(R.id.btnMenu1Prepare);
+        menu2PlaintextSun = findViewById(R.id.btnMenu2PlaintextSun);
         menu5Unset = findViewById(R.id.btnMenu5Unset);
 
 
@@ -56,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "menu1Prepare");
                 Intent intent = new Intent(MainActivity.this, PrepareActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        menu2PlaintextSun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "menu2PlaintextSun");
+                Intent intent = new Intent(MainActivity.this, PlaintextSunActivity.class);
                 startActivity(intent);
             }
         });

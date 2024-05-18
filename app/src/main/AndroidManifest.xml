@@ -18,7 +18,9 @@
         <activity
             android:name=".PrepareActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".PlaintextSunActivity"
+            android:exported="false" />
         <activity
             android:name=".UnsetActivity"
             android:exported="false" />
