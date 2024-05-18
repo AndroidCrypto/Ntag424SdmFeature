@@ -90,14 +90,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:checked="false"
-                    android:text="UID + CMAC" />
+                    android:text="UID + CMAC (endpoint is not working)" />
 
                 <RadioButton
                     android:id="@+id/rbFieldCounter"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:checked="false"
-                    android:text="Counter + CMAC" />
+                    android:text="Counter + CMAC (endpoint is not working)" />
 
                 <RadioButton
                     android:id="@+id/rbFieldUidCounter"

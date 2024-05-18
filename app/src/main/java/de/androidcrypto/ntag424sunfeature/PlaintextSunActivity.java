@@ -214,12 +214,16 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
                      * 5) Save the modified file settings back to the tag
                      */
 
-                    // todo get File Settings for File 2 to get the key number necessary for writing (key 0 or key 2 ?)
+                    /**
+                     * Note: the library version has an issue in retrieving the file settings:
+                     * it should work without previous authentication but actually needs an authentication with any key.
+                     * I'm using the AUTH_KEY0 for this task, get the file settings for file 2 and then run the
+                     * authentication again with the RW key.
+                     */
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                    //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
@@ -233,6 +237,44 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
                             writeToUiAppend(output, "LRP Authentication FAILURE");
                             writeToUiAppend(output, "Authentication not possible, Operation aborted");
                             return;
+                        }
+                    }
+
+                    // get File Settings for File 2 to get the key number necessary for writing (key 0 or key 2 ?)
+                    FileSettings fileSettings02 = null;
+                    try {
+                        fileSettings02 = GetFileSettings.run(dnaC, NDEF_FILE_NUMBER);
+                    } catch (Exception e) {
+                        Log.e(TAG, "getFileSettings File 02 Exception: " + e.getMessage());
+                        writeToUiAppend(output, "getFileSettings File 02 Exception: " + e.getMessage());
+                    }
+                    if (fileSettings02 == null) {
+                        Log.e(TAG, "getFileSettings File 02 Error, Operation aborted");
+                        writeToUiAppend(output, "getFileSettings File 02 Error, Operation aborted");
+                        return;
+                    }
+                    int ACCESS_KEY_RW = fileSettings02.readWritePerm;
+                    int ACCESS_KEY_CAR = fileSettings02.changePerm; // we do need this information later when changing the file settings
+                    writeToUiAppend(output, "getFileSettings File 02 AUTH-KEY RW Is: " + ACCESS_KEY_RW);
+                    if (ACCESS_KEY_RW != ACCESS_KEY0) {
+                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "AES Authentication SUCCESS");
+                        } else {
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
+                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
                         }
                     }
 
@@ -264,25 +306,34 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
 
-                    FileSettings fileSettings02 = null;
-                    try {
-                        fileSettings02 = GetFileSettings.run(dnaC, NDEF_FILE_NUMBER);
-                    } catch (Exception e) {
-                        Log.e(TAG, "getFileSettings File 02 Exception: " + e.getMessage());
-                        writeToUiAppend(output, "getFileSettings File 02 Exception: " + e.getMessage());
-                    }
-                    if (fileSettings02 == null) {
-                        Log.e(TAG, "getFileSettings File 02 Error, Operation aborted");
-                        writeToUiAppend(output, "getFileSettings File 02 Error, Operation aborted");
-                        return;
+                    // check if we authenticated with the right key - here we need the CAR key
+                    if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
+                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "AES Authentication SUCCESS");
+                        } else {
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
+                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
+                        }
                     }
 
+                    // change the auth key settings
                     fileSettings02.sdmSettings = sdmSettings;
                     fileSettings02.readWritePerm = ACCESS_KEY2;
                     fileSettings02.changePerm = ACCESS_KEY0;
                     fileSettings02.readPerm = ACCESS_EVERYONE;
                     fileSettings02.writePerm = ACCESS_KEY2;
-
                     try {
                         ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
                     } catch (IOException e) {
@@ -290,7 +341,6 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
                         writeToUiAppend(output, "ChangeFileSettings File 02 Error, Operation aborted");
                         return;
                     }
-
                     writeToUiAppend(output, "File 02h Change File Settings SUCCESS");
 
                 } catch (IOException e) {
