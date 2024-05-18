@@ -47,6 +47,8 @@ This app can work with both authentication modes, but does not have an option to
 
 ### Default content of file 1 (Capability Container)
 
+NFC Forum Type 4 Tag Technical Specification: https://nfc-forum.org/uploads/specifications/97-NFCForum-TS-T4T-1.2.pdf
+
 ```plaintext
 Capability Container File
 The Capability Container (CC) file is a StandardData file with respect to access rights
@@ -71,6 +73,9 @@ This content is written to the  file 1:
 ```plaintext
 Default (fabric):
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000");
+
+Read Only:
+byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000FF0506E10500808283000000000000000000");
 
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010000ff0406E10401000000");
 

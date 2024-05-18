@@ -1,0 +1,209 @@
+** TagInfo Scan (version 5.0.0) 18-Mai-24 11:13:11 **
+Report Type: -- IC INFO ------------------------------
+
+# IC Manufacturer:
+NXP Semiconductors
+
+# IC Type:
+NTAG 424 DNA
+
+-- NDEF ------------------------------
+
+# No NDEF Message present:
+
+# Capability Container (CC) file content:
+Mapping version 2.0
+CC length: 23 bytes
+Maximum Le value: 256 bytes (0x100)
+Maximum Lc value: 255 bytes (0xFF)
+NDEF File Control TLV:
+* Length: 6 bytes
+* NDEF file ID: 0xE104
+* Maximum NDEF data size: 256 bytes (0x100)
+* NDEF access: Read & Write (0x0000)
+Proprietary File Control TLV:
+* Length: 6 bytes
+* Value: 0xE10500808283
+
+[00] 00 17 20 01 00 00 FF 04 06 E1 04 01 00 00 00 05 |␀␗␠␁␀␀.␄␆.␄␁␀␀␀␅|
+[10] 06 E1 05 00 80 82 83 00 00 00 00 00 00 00 00 00 |␆.␅␀...␀␀␀␀␀␀␀␀␀|
+
+
+# Type 4 Tag File Control Information (FCI):
+Type 4 Tag v2 application FCI: [none]
+CC file FCI: [none]
+NDEF file FCI: [none]
+
+# NDEF file contents:
+[000] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[010] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[020] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[030] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[040] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[050] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[060] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[070] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[080] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[090] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0A0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0B0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0C0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0D0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0E0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0F0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+
+-- EXTRA ------------------------------
+
+# Memory Information:
+448 bytes total memory
+* 416 bytes user memory
+
+# IC Information:
+Capacitance: 50 pF
+
+# ISO-FID : ISO DF-Name:
+E110 : D2760000850101
+* Contains ISO FIDs: E103, E104, EF05
+
+# Version information:
+Vendor ID: NXP Semiconductors (0x04)
+Type: NTAG (0x04)
+Subtype: 50 pF (0x02)
+Major version: 0x30 (0x30)
+Minor version: 0x00 (0x00)
+Storage size: 416 bytes (0x11)
+Protocol: ISO/IEC 14443-4 (0x05)
+
+# Configuration Information:
+Secure Dynamic Messaging: Disabled
+UID Mirroring: Disabled
+SDM Read Counter: Disabled
+SDM Read Counter Limit: Disabled
+Encrypted File Data Mirroring: Disabled
+
+# Originality Check (asymmetric):
+Signature verified with NXP public key
+
+# Originality Check (symmetric):
+Originality Check successful, IC produced by NXP
+
+# TagInfo Version:
+Version :5.0.0
+
+# Device Info:
+Device Model :samsung ( SM-A515F )
+Android OS Version :13
+
+-- FULL SCAN ------------------------------
+
+# Technologies Supported:
+Fully compliant to the ISO/IEC 14443, all parts 1 to 4
+Fully compliant to the ISO/IEC 7816-4 file selection 
+ and APDU handling
+Fully compliant passive target compliant to 
+ ISO/IEC18092
+
+# Android Technology Information:
+Tag description:
+* TAG: Tech [android.nfc.tech.IsoDep, android.nfc.tech.NfcA, android.nfc.tech.Ndef]
+* Maximum transceive length: 65279 bytes
+* Default maximum transceive time-out: 618 ms
+* Extended length APDUs supported
+* Maximum transceive length: 253 bytes
+* Default maximum transceive time-out: 618 ms
+MIFARE Classic support present in Android
+
+# Detailed Protocol Information:
+ID: 04:9E:18:82:4F:13:90
+ATQA: 0x4403
+SAK: 0x20
+ATS: 0x067777710280
+* Max. accepted frame size: 128 bytes (FSCI: 7)
+* Supported receive rates:
+	- 106, 212, 424, 848 kbit/s (DR: 1, 2, 4, 8)
+* Supported send rates:
+	- 106, 212, 424, 848 kbit/s (DS: 1, 2, 4, 8)
+* Different send and receive rates supported
+* SFGT: 604.1 us  (SFGI: 1)
+* FWT: 38.66 ms  (FWI: 7)
+* NAD not supported
+* CID supported
+* Historical bytes: 0x80 |.|
+
+# Memory Content:
+PICC configuration:
+* PICC authentication not supported
+* Key configuration:
+  - 4 immutable AES 128 bit originality keys
+
+Application configuration (DF 0xD2760000850101):
+* Default AppMasterKey
+* Key configuration:
+  - 5 mutable AES 128 bit AppKeys
+
+
+Settings for file 01:
+* FileType: StandardData file
+* Secure Dynamic Messaging: disabled
+* Communication mode: plain
+
+* Permissions:
+	- ReadWrite: with key 0x0
+	- Change: with key 0x0
+	- Read: free access
+	- Write: with key 0x0
+
+* File size: 32 bytes
+
+[00] 00 17 20 01 00 00 FF 04 06 E1 04 01 00 00 00 05 |␀␗␠␁␀␀.␄␆.␄␁␀␀␀␅|
+[10] 06 E1 05 00 80 82 83 00 00 00 00 00 00 00 00 00 |␆.␅␀...␀␀␀␀␀␀␀␀␀|
+
+
+Settings for file 02:
+* FileType: StandardData file
+* Secure Dynamic Messaging: disabled
+* Communication mode: plain
+
+* Permissions:
+	- ReadWrite: free access
+	- Change: with key 0x0
+	- Read: free access
+	- Write: free access
+
+* File size: 256 bytes
+
+[000] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[010] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[020] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[030] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[040] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[050] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[060] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[070] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[080] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[090] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0A0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0B0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0C0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0D0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0E0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+[0F0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+
+Settings for file 03:
+* FileType: StandardData file
+* Secure Dynamic Messaging: disabled
+* Communication mode: MAC authenticated
+
+* Permissions:
+	- ReadWrite: with key 0x3
+	- Change: with key 0x0
+	- Read: with key 0x2
+	- Write: with key 0x3
+
+* File size: 128 bytes
+
+
+--------------------------------------
+
