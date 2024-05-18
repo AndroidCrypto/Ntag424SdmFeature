@@ -208,7 +208,7 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                      * These steps are running - assuming that all keys are 'default' keys filled with 16 00h values
                      * 1) Authenticate with Application Key 00h in AES mode
                      * 2) If the authentication in AES mode fails try to authenticate in LRP mode
-                     * 3) Write an URL template to file 02 with Uid and/or Counter plus CMAC
+                     * 3) Write an URL template to file 02 with PICC (Uid and/or Counter) plus CMAC
                      * 4) Get existing file settings for file 02
                      * 5) Save the modified file settings back to the tag
                      */
@@ -280,7 +280,7 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                     // write URL template to file 02 depending on radio button
                     SDMSettings sdmSettings = new SDMSettings();
                     sdmSettings.sdmEnabled = true; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
-                    sdmSettings.sdmMetaReadPerm = ACCESS_EVERYONE; // Set to a key to get encrypted PICC data
+                    sdmSettings.sdmMetaReadPerm = ACCESS_KEY2; // Set to a key to get encrypted PICC data
                     sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypt FileData
                     sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
                     sdmSettings.sdmOptionEncryptFileData = false;
@@ -289,12 +289,16 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                     master.usesLRP = isLrpAuthenticationMode;
                     master.fileDataLength = 0; // no (encrypted) file data
                     if (rbUid.isChecked()) {
-                        ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&cmac={MAC}", sdmSettings);
+                        sdmSettings.sdmOptionUid = true;
+                        sdmSettings.sdmOptionReadCounter = false;
                     } else if (rbCounter.isChecked()) {
-                        ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                        sdmSettings.sdmOptionUid = false;
+                        sdmSettings.sdmOptionReadCounter = true;
                     } else {
-                        ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                        sdmSettings.sdmOptionUid = true;
+                        sdmSettings.sdmOptionReadCounter = true;
                     }
+                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
                     } catch (IOException e) {
