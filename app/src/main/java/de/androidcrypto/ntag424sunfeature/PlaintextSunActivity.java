@@ -168,9 +168,9 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
             // Work around for some broken Nfc firmware implementations that poll the card too fast
             options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250);
 
-            // Enable ReaderMode for all types of card and disable platform sounds
-            // the option NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK is NOT set
-            // to get the data of the tag afer reading
+            // Enable ReaderMode for NFC A card type and disable platform sounds
+            // the option NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK is set
+            // so the reader won't try to get a NDEF message
             mNfcAdapter.enableReaderMode(this,
                     this,
                     NfcAdapter.FLAG_READER_NFC_A |
@@ -189,7 +189,7 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
     }
 
     private void runWorker() {
-        Log.d(TAG, "PlaintextSunActivity Worker");
+        Log.d(TAG, "Plaintext Sun Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -282,7 +282,7 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
                     SDMSettings sdmSettings = new SDMSettings();
                     sdmSettings.sdmEnabled = true; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
                     sdmSettings.sdmMetaReadPerm = ACCESS_EVERYONE; // Set to a key to get encrypted PICC data
-                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypt FileData
+                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypted File data
                     sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
                     sdmSettings.sdmOptionEncryptFileData = false;
                     byte[] ndefRecord = null;

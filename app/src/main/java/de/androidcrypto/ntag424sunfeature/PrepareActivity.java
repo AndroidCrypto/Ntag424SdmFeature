@@ -161,9 +161,9 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
             // Work around for some broken Nfc firmware implementations that poll the card too fast
             options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250);
 
-            // Enable ReaderMode for all types of card and disable platform sounds
-            // the option NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK is NOT set
-            // to get the data of the tag afer reading
+            // Enable ReaderMode for NFC A card type and disable platform sounds
+            // the option NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK is set
+            // so the reader won't try to get a NDEF message
             mNfcAdapter.enableReaderMode(this,
                     this,
                     NfcAdapter.FLAG_READER_NFC_A |
@@ -182,7 +182,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
     }
 
     private void runWorker() {
-        Log.d(TAG, "PrepareActivity Worker");
+        Log.d(TAG, "Prepare Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {

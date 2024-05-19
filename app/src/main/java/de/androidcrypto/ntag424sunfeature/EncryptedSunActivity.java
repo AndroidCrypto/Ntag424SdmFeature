@@ -167,9 +167,9 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
             // Work around for some broken Nfc firmware implementations that poll the card too fast
             options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250);
 
-            // Enable ReaderMode for all types of card and disable platform sounds
-            // the option NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK is NOT set
-            // to get the data of the tag afer reading
+            // Enable ReaderMode for NFC A card type and disable platform sounds
+            // the option NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK is set
+            // so the reader won't try to get a NDEF message
             mNfcAdapter.enableReaderMode(this,
                     this,
                     NfcAdapter.FLAG_READER_NFC_A |
@@ -188,7 +188,7 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
     }
 
     private void runWorker() {
-        Log.d(TAG, "PlaintextSunActivity Worker");
+        Log.d(TAG, "Encrypted Sun Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -255,24 +255,31 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                     int ACCESS_KEY_RW = fileSettings02.readWritePerm;
                     int ACCESS_KEY_CAR = fileSettings02.changePerm; // we do need this information later when changing the file settings
                     writeToUiAppend(output, "getFileSettings File 02 AUTH-KEY RW Is: " + ACCESS_KEY_RW);
-                    if (ACCESS_KEY_RW != ACCESS_KEY0) {
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
-                        } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+
+                    // in fabric settings or after unset the RW Access Key is 'Eh' = 14 meaning free read and write access
+                    // we have to skip an authentication with this key as it does not exist !
+                    if (ACCESS_KEY_RW == 14) {
+                        // do nothing, skip authentication
+                    } else {
+                        if (ACCESS_KEY_RW != ACCESS_KEY0) {
+                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                             if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
+                                writeToUiAppend(output, "AES Authentication SUCCESS");
                             } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
+                                writeToUiAppend(output, "AES Authentication FAILURE");
+                                writeToUiAppend(output, "Trying to authenticate in LRP mode");
+                                //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                                if (success) {
+                                    writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                    isLrpAuthenticationMode = true;
+                                } else {
+                                    writeToUiAppend(output, "LRP Authentication FAILURE");
+                                    writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                    return;
+                                }
                             }
                         }
                     }
@@ -281,7 +288,7 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                     SDMSettings sdmSettings = new SDMSettings();
                     sdmSettings.sdmEnabled = true; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
                     sdmSettings.sdmMetaReadPerm = ACCESS_KEY2; // Set to a key to get encrypted PICC data
-                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypt FileData
+                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2; // Used to create the MAC and Encrypted File data
                     sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
                     sdmSettings.sdmOptionEncryptFileData = false;
                     byte[] ndefRecord = null;
