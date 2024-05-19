@@ -102,10 +102,51 @@ is giving an error message ("400 Bad Request: Failed to decode parameters").
 
 If the SUN/SDM feature is enabled you will get the "real" tag data and a positive test result.
 
+## Example for a NDEF URL-Link with Plaintext data (UID and Read Counter):
 ```plaintext
 https://sdm.nfcdeveloper.com/tagpt?uid=049F50824F1390&ctr=000001&cmac=2446E527C37E073A
 ```
 
+Validation at the backend server:
+```plaintext
+Secure Dynamic Messaging Backend Server Demo
+Cryptographic signature validated.
+Encryption mode: AES
+NFC TAG UID: 049f50824f1390
+Read counter: 1
+```
+
+## Example for a NDEF URL-Link with Encrypted PICC data (UID and Read Counter):
+```plaintext
+https://sdm.nfcdeveloper.com/tag?picc_data=EF963FF7828658A599F3041510671E88&cmac=94EED9EE65337086
+```
+
+Validation at the backend server:
+```plaintext
+Secure Dynamic Messaging Backend Server Demo
+Cryptographic signature validated.
+Encryption mode: AES
+PICC Data Tag: c7
+NFC TAG UID: 04de5f1eacc040
+Read counter: 61
+```
+
+## Example for a NDEF URL-Link with Encrypted PICC data (UID and Read Counter) and Encrypted File data:
+```plaintext
+https://sdm.nfcdeveloper.com/tag?picc_data=4E8D0223F8C17CDCCE5BC24076CFAA0D&enc=B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097&cmac=5FD76DE4BD942DFC
+```
+
+Validation at the backend server:
+```plaintext
+Secure Dynamic Messaging Backend Server Demo
+Cryptographic signature validated.
+Encryption mode: AES
+PICC Data Tag: c7
+NFC TAG UID: 049f50824f1390
+Read counter: 16
+File data (hex): 31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a
+File data (UTF-8): 19.05.2024 12:22:33#1234************************
+```
 
 Btw.: the named website is run by "Arx Research, Inc.". The source code is available here: https://github.com/nfc-developer/sdm-backend.
 
