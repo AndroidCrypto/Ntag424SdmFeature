@@ -258,12 +258,12 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         return;
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
-
-
                 } catch (IOException e) {
                     Log.e(TAG, "Exception: " + e.getMessage());
                     writeToUiAppend(output, "Exception: " + e.getMessage());
                 }
+
+                vibrateShort();
             }
         });
         worker.start();

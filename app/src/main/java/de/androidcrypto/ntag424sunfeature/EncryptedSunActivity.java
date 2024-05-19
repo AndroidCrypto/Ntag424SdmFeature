@@ -357,6 +357,8 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                     Log.e(TAG, "Exception: " + e.getMessage());
                     writeToUiAppend(output, "Exception: " + e.getMessage());
                 }
+
+                vibrateShort();
             }
         });
         worker.start();
