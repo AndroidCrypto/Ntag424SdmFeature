@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Select the Fields"
+                android:text="Select the Keys for decryption"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -86,25 +86,18 @@
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/rbFieldUid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:checked="false"
-                    android:text="(PICC with UID) + File data + CMAC (endpoint is not working)" />
-
-                <RadioButton
-                    android:id="@+id/rbFieldCounter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:checked="false"
-                    android:text="(PICC with Counter) + File data + CMAC (endpoint is not working)" />
-
-                <RadioButton
-                    android:id="@+id/rbFieldUidCounter"
+                    android:id="@+id/rbUseDefaultKeys"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:checked="true"
-                    android:text="(PICC with UID + Counter) + File data + CMAC" />
+                    android:text="use DEFAULT keys for encrypted data" />
+
+                <RadioButton
+                    android:id="@+id/rbUseCustomKeys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:checked="false"
+                    android:text="use CUSTOM keys for encrypted data" />
 
             </RadioGroup>
 

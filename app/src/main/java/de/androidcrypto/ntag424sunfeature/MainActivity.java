@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Button menu1Prepare, menu2PlaintextSun, menu3EncryptedSun, menu4EncryptedFileSun, menu5Unset;
-    private Button menu6NdefReader;
+    private Button menu6NdefReader, menu8EncryptedFileSunCustomKeys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         menu4EncryptedFileSun = findViewById(R.id.btnMenu4EncryptedFileSun);
         menu5Unset = findViewById(R.id.btnMenu5Unset);
         menu6NdefReader = findViewById(R.id.btnMenu6NdefReader);
+        menu8EncryptedFileSunCustomKeys = findViewById(R.id.btnMenu8EncryptedFileSunCustomKeys);
 
         menu1Prepare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +106,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "menu6NdefReader");
                 Intent intent = new Intent(MainActivity.this, NdefReaderActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        menu8EncryptedFileSunCustomKeys.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "menu8EncryptedFileSunCustomKeys");
+                Intent intent = new Intent(MainActivity.this, EncryptedFileSunCustomKeysActivity.class);
                 startActivity(intent);
             }
         });

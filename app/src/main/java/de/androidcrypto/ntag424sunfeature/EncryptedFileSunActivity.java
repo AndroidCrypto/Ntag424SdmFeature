@@ -365,6 +365,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                     try {
                         ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
                     } catch (IOException e) {
+                        e.printStackTrace();
                         Log.e(TAG, "ChangeFileSettings IOException: " + e.getMessage());
                         writeToUiAppend(output, "ChangeFileSettings File 02 Error, Operation aborted");
                         return;

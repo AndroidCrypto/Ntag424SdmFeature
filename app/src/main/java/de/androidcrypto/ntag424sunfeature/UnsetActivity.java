@@ -5,7 +5,14 @@ import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
+
+import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
+import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
+import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_DEFAULT;
+import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_VERSION_NEW;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +38,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
 import net.bplearning.ntag424.command.ChangeFileSettings;
+import net.bplearning.ntag424.command.ChangeKey;
 import net.bplearning.ntag424.command.FileSettings;
 import net.bplearning.ntag424.command.GetFileSettings;
 import net.bplearning.ntag424.command.WriteData;
@@ -296,6 +304,58 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                         return;
                     }
                     writeToUiAppend(output, "File 02h Clearing SUCCESS");
+
+                    // change the application keys 3 + 4 from custom back to default keys
+                    // to change the keys we need an authentication with application key 0 = master application key
+                    // authentication
+                    success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                    if (success) {
+                        writeToUiAppend(output, "AES Authentication SUCCESS");
+                    } else {
+                        writeToUiAppend(output, "AES Authentication FAILURE");
+                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "LRP Authentication SUCCESS");
+                            isLrpAuthenticationMode = true;
+                        } else {
+                            writeToUiAppend(output, "LRP Authentication FAILURE");
+                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                            return;
+                        }
+                    }
+
+                    // change application key 3
+                    success = false;
+                    try {
+                        ChangeKey.run(dnaC, ACCESS_KEY3, APPLICATION_KEY_3, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_NEW);
+                        success = true;
+                    } catch (IOException e) {
+                        Log.e(TAG, "ChangeKey 3 IOException: " + e.getMessage());
+                    }
+                    if (success) {
+                        writeToUiAppend(output, "Change Application Key 3 SUCCESS");
+                    } else {
+                        writeToUiAppend(output, "Change Application Key 3 FAILURE, Operation aborted");
+                        return;
+                    }
+
+                    // change application key 4
+                    success = false;
+                    try {
+                        ChangeKey.run(dnaC, ACCESS_KEY4, APPLICATION_KEY_4, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_NEW);
+                        success = true;
+                    } catch (IOException e) {
+                        Log.e(TAG, "ChangeKey 4 IOException: " + e.getMessage());
+                    }
+                    if (success) {
+                        writeToUiAppend(output, "Change Application Key 4 SUCCESS");
+                    } else {
+                        writeToUiAppend(output, "Change Application Key 4 FAILURE, Operation aborted");
+                        return;
+                    }
+
+
 
                 } catch (IOException e) {
                     Log.e(TAG, "Exception: " + e.getMessage());

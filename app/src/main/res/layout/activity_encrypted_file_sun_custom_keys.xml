@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".EncryptedFileSunActivity">
+    tools:context=".EncryptedFileSunCustomKeysActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="4 Encrypted File SUN Feature"
+                android:text="4 Encrypted File SUN Feature with Custom Keys"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Write the URL template for Encrypted File SUN"
+                android:text="Write the URL template for Encrypted File SUN using CUSTOM keys"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. The file data is a timestamp and 5 additional characters. Assuming that the files are writable after an authentication with Default Keys (Write Access Key is '0h', 16 * '00h')"
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. The file data is a timestamp and 5 additional characters. This is using CUSTOM keys for PICC, CMAC and File Data."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />

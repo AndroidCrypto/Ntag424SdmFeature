@@ -6,6 +6,8 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
+import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
+import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sunfeature.Utils.DOUBLE_DIVIDER;
 import static de.androidcrypto.ntag424sunfeature.Utils.SINGLE_DIVIDER;
 import static de.androidcrypto.ntag424sunfeature.Utils.printData;
@@ -61,20 +63,13 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
 
     private static final String TAG = NdefReaderActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
-    private RadioButton rbUid, rbCounter, rbUidCounter;
-
+    private RadioButton rbUseDefaultKeys, rbUseCustomKeys;
     private DnaCommunicator dnaC = new DnaCommunicator();
     private NfcAdapter mNfcAdapter;
     private Ndef ndef;
     private NdefMessage ndefMessage;
     private NdefRecord[] ndefRecords;
     private byte[] tagIdByte;
-
-    //private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010000ff0406E10401000000"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_RW = Utils.hexStringToByteArray("000F20003A00340406E10401000000"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_R = Utils.hexStringToByteArray("000F20003A00340406E104010000FF"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000"); // Read Only Access
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +86,8 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
         setSupportActionBar(myToolbar);
 
         output = findViewById(R.id.etOutput);
-        rbUid = findViewById(R.id.rbFieldUid);
-        rbCounter = findViewById(R.id.rbFieldCounter);
-        rbUidCounter = findViewById(R.id.rbFieldUidCounter);
+        rbUseDefaultKeys = findViewById(R.id.rbUseDefaultKeys);
+        rbUseCustomKeys = findViewById(R.id.rbUseCustomKeys);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
@@ -252,13 +246,21 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 // todo use a checkButton
                 boolean isLrpAuthentication = false; // todo this is STATIC
 
-                // We need a key for CMAC validation - this was defined during SUN setup:
-                // sdmSettings.sdmFileReadPerm = ACCESS_KEY2; // Used to create the MAC and Encrypt FileData
-                // The backend server needs to know this key:
-                byte[] cmacKey = new byte[16]; // here we are using the default AES-128 key
+                // key usage depends on radio button - use default or custom keys
+                byte[] cmacKey = null;
+                byte[] encryptedFileDataKey = null;
+                if (rbUseDefaultKeys.isChecked()) {
+                    // We need a key for CMAC validation - this was defined during SUN setup:
+                    // sdmSettings.sdmFileReadPerm = ACCESS_KEY2; // Used to create the MAC and Encrypt FileData
+                    // The backend server needs to know this key:
+                    cmacKey = new byte[16]; // here we are using the default AES-128 key
 
-                // We need a key for Encrypted File Data (if used in the NDEF message) - this was used during SUN setup as well:
-                byte[] encryptedFileDataKey = new byte[16]; // here we are using the default AES-128 key
+                    // We need a key for Encrypted File Data (if used in the NDEF message) - this was used during SUN setup as well:
+                     encryptedFileDataKey = new byte[16]; // here we are using the default AES-128 key
+                } else {
+                    cmacKey = APPLICATION_KEY_4.clone();
+                    encryptedFileDataKey = APPLICATION_KEY_3.clone();
+                }
 
                 // now we are trying to parse the content of the message
                 // we expecting a header 'https://sdm.nfcdeveloper.com/'
@@ -403,7 +405,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         }
                     } else {
                         // we do have encrypted file data as well
-                        writeToUiAppend(output, "File Data: " + encryptedFileData);
+                        writeToUiAppend(output, "Encrypted File Data:\n" + encryptedFileData);
                         // at this point we know the UID and ReadCounter data from decrypted PICC data. Now we can decrypt the encrypted file data using the (personalized ?) fileKey
 
                         //PiccData piccDataEnc = new PiccData(uidDecrypted, readCounterDecrypted, isLrpAuthentication);
@@ -414,6 +416,19 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         writeToUiAppend(output, "Decrypted File data:\n" + new String(decryptedFileData, StandardCharsets.UTF_8));
 
                         // validate the CMAC over all elements
+                        // The CMAC is calculated over the encrypted file data STRING (upper case hex characters) and the
+                        // following '&cmac=' string. After concatenating both the string is converted to a byte[]
+                        byte[] encryptedFileDataForCmac = (encryptedFileData + "&cmac=").getBytes(StandardCharsets.UTF_8);
+                        cmacCalc = piccData.performShortCMAC(encryptedFileDataForCmac); // null if MAC on PICC-only data
+                        writeToUiAppend(output, printData("cmacCalc", cmacCalc));
+                        isCmacValidated = Arrays.equals(cmacCalc, cmacBytes);
+                        if (isCmacValidated) {
+                            writeToUiAppend(output, "The CMAC is VALIDATED");
+                        } else {
+                            writeToUiAppend(output, "The CMAC is VOID");
+                        }
+
+/*
                         // for this we are rebuilding the PICC data
                         piccData = new PiccData(uidDecrypted, readCounterDecrypted, isLrpAuthentication);
                         piccData.setMacFileKey(cmacKey);
@@ -432,7 +447,8 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
 
                         // test with static data that are working on https://sdm.nfcdeveloper.com
                         byte[] encryptedPiccDataTest = Utils.hexStringToByteArray("4E8D0223F8C17CDCCE5BC24076CFAA0D");
-                        byte[] encryptedFileDataTest = Utils.hexStringToByteArray("B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097");
+                        String encryptedFileDataStringTest = "B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097";
+                        byte[] encryptedFileDataTest = Utils.hexStringToByteArray(encryptedFileDataStringTest);
                         byte[] cmacTest = Utils.hexStringToByteArray("5FD76DE4BD942DFC");
 
                         // step 1: PICC data decryption
@@ -447,24 +463,31 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         byte[] decryptedFileDataTest = decryptedPiccDataTest.decryptFileData(encryptedFileDataTest);
                         System.out.println("decryptedFileData: " + Utils.bytesToHex(decryptedFileDataTest));
                         System.out.println("decryptedFileData: " + new String(decryptedFileDataTest, StandardCharsets.UTF_8));
+                        */
+
                         /*
                             UID: 049f50824f1390
                             ReadCounter: 16
                             decryptedFileData: 31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a
                             decryptedFileData: 19.05.2024 12:22:33#1234************************
                          */
-
+/*
                         // step 3: validate the CMAC
-                        byte[] cmacCalcTest = decryptedPiccDataTest.performShortCMAC(decryptedFileDataTest);
-                        System.out.println("CMAC expected  : " + Utils.bytesToHex(cmacCalcTest));
-                        System.out.println("CMAC calculated: " + Utils.bytesToHex(cmacTest));
+                        // We need to use the 'encrypted file data' including the following '&cmac=' as input
+                        // for the CMAC calculation. Then we have to convert this string into byte[] representation
+                        byte[] cmacDataTest = (encryptedFileDataStringTest + "&cmac=").getBytes(StandardCharsets.UTF_8);
+                        byte[] cmacCalcTest = decryptedPiccDataTest.performShortCMAC(cmacDataTest);
+                        System.out.println("CMAC expected  : " + Utils.bytesToHex(cmacTest));
+                        System.out.println("CMAC calculated: " + Utils.bytesToHex(cmacCalcTest));
                         System.out.println("The CMAC is validated: " + Arrays.equals(cmacCalcTest, cmacTest));
-                        /*
-                            CMAC expected  : 93bad3028afb5d0c
-                            CMAC calculated: 5fd76de4bd942dfc
-                            The CMAC is validated: false
-                         */
 
+ */
+                        /*
+                            CMAC expected  : 5fd76de4bd942dfc
+                            CMAC calculated: 5fd76de4bd942dfc
+                            The CMAC is validated: true
+                         */
+/*
                         byte[] uidTest = Utils.hexStringToByteArray("049f50824f1390");
                         int readCounterTest = 16;
                         byte[] fileDataTest = Utils.hexStringToByteArray("31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a");
@@ -474,7 +497,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
 
                         writeToUiAppend(output, printData("CMAC Test", cmacTest));
                         writeToUiAppend(output, printData("CMAC Calc", cmacCalcTest));
-
+*/
 /*
 https://sdm.nfcdeveloper.com/tag?picc_data=4E8D0223F8C17CDCCE5BC24076CFAA0D&enc=B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097&cmac=5FD76DE4BD942DFC
 

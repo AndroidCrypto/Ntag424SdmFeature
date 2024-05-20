@@ -68,3 +68,59 @@ The validation is working with Plaintext and Encrypted PICC data without any pro
 
 Greetings
 Michael
+
+19.05.2024 Answer Jon: 
+```plaintext
+This is actually working correctly. The problem is that the MAC starts at the earlier of MacInputOffset or EncOffset, but utilizes the entirety of the string all the way to the MacOffset, and in its original (encrypted) form.
+The code to generate the CMAC would be:
+decryptedPiccDataTest.performShortCMAC("B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097&cmac=".getBytes(StandardCharsets.UTF_8));
+Note that even the "&cmac=" is part of the MAC input.
+```
+
+20.05.2024 closure by me:
+
+Dear Jon,
+Thanks for your fast answer and help. Your "workflow" is working like expected, below is my edited
+test program for others who are struggling like me.
+
+Greetings
+Michael
+
+```plaintext
+byte[] encryptedPiccDataTest = Utils.hexStringToByteArray("4E8D0223F8C17CDCCE5BC24076CFAA0D");    
+String encryptedFileDataStringTest = "B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097";
+byte[] encryptedFileDataTest = Utils.hexStringToByteArray(encryptedFileDataStringTest);                      
+byte[] cmacTest = Utils.hexStringToByteArray("5FD76DE4BD942DFC");
+
+// step 1: PICC data decryption                                                                                         
+PiccData decryptedPiccDataTest = PiccData.decodeFromEncryptedBytes(encryptedPiccDataTest, new byte[16], false);         
+byte[] uidDecryptedTest = decryptedPiccDataTest.getUid();                                                               
+int readCounterDecryptedTest = decryptedPiccDataTest.getReadCounter();                                                  
+System.out.println("UID: " + Utils.bytesToHex(uidDecryptedTest));                                                       
+System.out.println("ReadCounter: " + readCounterDecryptedTest);
+
+// step 2: decrypt Encrypted File data                                                                                  
+decryptedPiccDataTest.setMacFileKey(new byte[16]);                                                                      
+byte[] decryptedFileDataTest = decryptedPiccDataTest.decryptFileData(encryptedFileDataTest);                            
+System.out.println("decryptedFileData: " + Utils.bytesToHex(decryptedFileDataTest));                                    
+System.out.println("decryptedFileData: " + new String(decryptedFileDataTest, StandardCharsets.UTF_8));                  
+/*                                                                                                                      
+UID: 049f50824f1390                                                                                                 
+ReadCounter: 16                                                                                                     
+decryptedFileData: 31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a
+decryptedFileData: 19.05.2024 12:22:33#1234************************                                                 
+*/
+
+// step 3: validate the CMAC                
+// We need to use the 'encrypted file data' including the following '&cmac=' as input
+// for the CMAC calculation. Then we have to convert this string into byte[] representation
+byte[] cmacDataTest = (encryptedFileDataStringTest + "&cmac=").getBytes(StandardCharsets.UTF_8);                                                                            
+System.out.println("CMAC expected  : " + Utils.bytesToHex(cmacTest));                                               
+System.out.println("CMAC calculated: " + Utils.bytesToHex(cmacCalcTest));                                                   
+System.out.println("The CMAC is validated: " + Arrays.equals(cmacCalcTest, cmacTest));                                  
+/*                                                                                                                      
+CMAC expected  : 5fd76de4bd942dfc                                                                                   
+CMAC calculated: 5fd76de4bd942dfc                                                                                   
+The CMAC is validated: true                                                                                        
+*/   
+```
