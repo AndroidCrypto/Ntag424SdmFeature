@@ -55,7 +55,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
     private static final String TAG = EncryptedFileSunCustomKeysActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
-
     private DnaCommunicator dnaC = new DnaCommunicator();
     private NfcAdapter mNfcAdapter;
     private IsoDep isoDep;
@@ -373,7 +372,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                     Log.e(TAG, "Exception: " + e.getMessage());
                     writeToUiAppend(output, "Exception: " + e.getMessage());
                 }
-
+                writeToUiAppend(output, "== FINISHED ==");
                 vibrateShort();
             }
         });

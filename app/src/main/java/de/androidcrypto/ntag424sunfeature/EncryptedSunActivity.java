@@ -47,17 +47,10 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
     private static final String TAG = EncryptedSunActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
-
     private DnaCommunicator dnaC = new DnaCommunicator();
     private NfcAdapter mNfcAdapter;
     private IsoDep isoDep;
     private byte[] tagIdByte;
-
-    //private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010000ff0406E10401000000"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_RW = Utils.hexStringToByteArray("000F20003A00340406E10401000000"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_R = Utils.hexStringToByteArray("000F20003A00340406E104010000FF"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000"); // Read Only Access
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -357,7 +350,7 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                     Log.e(TAG, "Exception: " + e.getMessage());
                     writeToUiAppend(output, "Exception: " + e.getMessage());
                 }
-
+                writeToUiAppend(output, "== FINISHED ==");
                 vibrateShort();
             }
         });

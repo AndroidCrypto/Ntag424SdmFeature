@@ -13,6 +13,7 @@ import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_DEFAULT;
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_VERSION_NEW;
+import static de.androidcrypto.ntag424sunfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT;
 
 import android.content.Context;
 import android.content.Intent;
@@ -60,10 +61,6 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
     private IsoDep isoDep;
     private byte[] tagIdByte;
 
-    //private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010000ff0406E10401000000"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_RW = Utils.hexStringToByteArray("000F20003A00340406E10401000000"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_R = Utils.hexStringToByteArray("000F20003A00340406E104010000FF"); // Read and Write Access
-    private byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000"); // Read Only Access
 
 
     @Override

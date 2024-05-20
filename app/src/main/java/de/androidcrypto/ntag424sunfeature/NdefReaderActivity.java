@@ -1,11 +1,5 @@
 package de.androidcrypto.ntag424sunfeature;
 
-import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
-
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sunfeature.Utils.DOUBLE_DIVIDER;
@@ -18,7 +12,6 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.IsoDep;
 import android.nfc.tech.Ndef;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,33 +31,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import net.bplearning.ntag424.DnaCommunicator;
-import net.bplearning.ntag424.command.ChangeFileSettings;
-import net.bplearning.ntag424.command.FileSettings;
-import net.bplearning.ntag424.command.GetFileSettings;
-import net.bplearning.ntag424.command.WriteData;
-import net.bplearning.ntag424.constants.Ntag424;
-import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
-import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
-import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.PiccData;
-import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 
 public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
     private static final String TAG = NdefReaderActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUseDefaultKeys, rbUseCustomKeys;
-    private DnaCommunicator dnaC = new DnaCommunicator();
     private NfcAdapter mNfcAdapter;
     private Ndef ndef;
     private NdefMessage ndefMessage;
@@ -430,271 +407,10 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         } else {
                             writeToUiAppend(output, "The CMAC is VOID");
                         }
-
-/*
-                        // for this we are rebuilding the PICC data
-                        piccData = new PiccData(uidDecrypted, readCounterDecrypted, isLrpAuthentication);
-                        piccData.setMacFileKey(cmacKey);
-
-                        writeToUiAppend(output, printData("decryptedFileData", decryptedFileData));
-                        byte[] decryptedFileDataReal = Arrays.copyOf(decryptedFileData, 24);
-
-                        cmacCalc = piccData.performShortCMAC(decryptedFileDataReal); // null if MAC on PICC-only data
-                        writeToUiAppend(output, printData("cmacCalc", cmacCalc));
-                        isCmacValidated = Arrays.equals(cmacCalc, cmacBytes);
-                        if (isCmacValidated) {
-                            writeToUiAppend(output, "The CMAC is VALIDATED");
-                        } else {
-                            writeToUiAppend(output, "The CMAC is VOID");
-                        }
-
-                        // test with static data that are working on https://sdm.nfcdeveloper.com
-                        byte[] encryptedPiccDataTest = Utils.hexStringToByteArray("4E8D0223F8C17CDCCE5BC24076CFAA0D");
-                        String encryptedFileDataStringTest = "B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097";
-                        byte[] encryptedFileDataTest = Utils.hexStringToByteArray(encryptedFileDataStringTest);
-                        byte[] cmacTest = Utils.hexStringToByteArray("5FD76DE4BD942DFC");
-
-                        // step 1: PICC data decryption
-                        PiccData decryptedPiccDataTest = PiccData.decodeFromEncryptedBytes(encryptedPiccDataTest, new byte[16], false);
-                        byte[] uidDecryptedTest = decryptedPiccDataTest.getUid();
-                        int readCounterDecryptedTest = decryptedPiccDataTest.getReadCounter();
-                        System.out.println("UID: " + Utils.bytesToHex(uidDecryptedTest));
-                        System.out.println("ReadCounter: " + readCounterDecryptedTest);
-
-                        // step 2: decrypt Encrypted File data
-                        decryptedPiccDataTest.setMacFileKey(new byte[16]);
-                        byte[] decryptedFileDataTest = decryptedPiccDataTest.decryptFileData(encryptedFileDataTest);
-                        System.out.println("decryptedFileData: " + Utils.bytesToHex(decryptedFileDataTest));
-                        System.out.println("decryptedFileData: " + new String(decryptedFileDataTest, StandardCharsets.UTF_8));
-                        */
-
-                        /*
-                            UID: 049f50824f1390
-                            ReadCounter: 16
-                            decryptedFileData: 31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a
-                            decryptedFileData: 19.05.2024 12:22:33#1234************************
-                         */
-/*
-                        // step 3: validate the CMAC
-                        // We need to use the 'encrypted file data' including the following '&cmac=' as input
-                        // for the CMAC calculation. Then we have to convert this string into byte[] representation
-                        byte[] cmacDataTest = (encryptedFileDataStringTest + "&cmac=").getBytes(StandardCharsets.UTF_8);
-                        byte[] cmacCalcTest = decryptedPiccDataTest.performShortCMAC(cmacDataTest);
-                        System.out.println("CMAC expected  : " + Utils.bytesToHex(cmacTest));
-                        System.out.println("CMAC calculated: " + Utils.bytesToHex(cmacCalcTest));
-                        System.out.println("The CMAC is validated: " + Arrays.equals(cmacCalcTest, cmacTest));
-
- */
-                        /*
-                            CMAC expected  : 5fd76de4bd942dfc
-                            CMAC calculated: 5fd76de4bd942dfc
-                            The CMAC is validated: true
-                         */
-/*
-                        byte[] uidTest = Utils.hexStringToByteArray("049f50824f1390");
-                        int readCounterTest = 16;
-                        byte[] fileDataTest = Utils.hexStringToByteArray("31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a");
-
-                        PiccData piccTest = new PiccData(uidTest, readCounterTest, false);
-                        piccTest.setMacFileKey(new byte[16]);
-
-                        writeToUiAppend(output, printData("CMAC Test", cmacTest));
-                        writeToUiAppend(output, printData("CMAC Calc", cmacCalcTest));
-*/
-/*
-https://sdm.nfcdeveloper.com/tag?picc_data=4E8D0223F8C17CDCCE5BC24076CFAA0D&enc=B56FED7FF7B23791C0684F17E117C97450723BB5C104E809C8929F0264CB99F9969D07FC32BB2D11995AEF826E355097&cmac=5FD76DE4BD942DFC
-
-Secure Dynamic Messaging Backend Server Demo
-Cryptographic signature validated.
-
-Encryption mode: AES
-PICC Data Tag: c7
-NFC TAG UID: 049f50824f1390
-Read counter: 16
-File data (hex): 31392e30352e323032342031323a32323a333323313233342a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a
-File data (UTF-8): 19.05.2024 12:22:33#1234************************
-Back to the main page
- */
-
-
-
-
-
-
-                        /*
-                        piccData = PiccData.decodeFromEncryptedBytes(encryptedFileDataBytes, cmacKey, isLrpAuthentication);
-                        piccData.setMacFileKey(cmacKey);
-                        byte[] finalCmac = piccData.performShortCMAC(decryptedFileData);
-                        isCmacValidated = Arrays.equals(finalCmac, cmacBytes);
-                        if (isCmacValidated) {
-                            writeToUiAppend(output, "The CMAC is VALIDATED");
-                        } else {
-                            writeToUiAppend(output, "The CMAC is VOID");
-                        }
-
-                         */
                     }
                 }
-
+                writeToUiAppend(output, "== FINISHED ==");
                 Utils.vibrateShort(getApplicationContext());
-/*
-                boolean success = false;
-                try {
-                    dnaC = new DnaCommunicator();
-                    try {
-                        dnaC.setTransceiver((bytesToSend) -> isoDep.transceive(bytesToSend));
-                    } catch (NullPointerException npe) {
-                        writeToUiAppend(output, "Please tap a tag before running any tests, aborted");
-                        return;
-                    }
-                    dnaC.setLogger((info) -> Log.d(TAG, "Communicator: " + info));
-                    dnaC.beginCommunication();
-
-
-
-                    // authentication
-                    boolean isLrpAuthenticationMode = false;
-                    success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                    if (success) {
-                        writeToUiAppend(output, "AES Authentication SUCCESS");
-                    } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
-                        } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                            return;
-                        }
-                    }
-
-                    // get File Settings for File 2 to get the key number necessary for writing (key 0 or key 2 ?)
-                    FileSettings fileSettings02 = null;
-                    try {
-                        fileSettings02 = GetFileSettings.run(dnaC, NDEF_FILE_NUMBER);
-                    } catch (Exception e) {
-                        Log.e(TAG, "getFileSettings File 02 Exception: " + e.getMessage());
-                        writeToUiAppend(output, "getFileSettings File 02 Exception: " + e.getMessage());
-                    }
-                    if (fileSettings02 == null) {
-                        Log.e(TAG, "getFileSettings File 02 Error, Operation aborted");
-                        writeToUiAppend(output, "getFileSettings File 02 Error, Operation aborted");
-                        return;
-                    }
-                    int ACCESS_KEY_RW = fileSettings02.readWritePerm;
-                    int ACCESS_KEY_CAR = fileSettings02.changePerm; // we do need this information later when changing the file settings
-                    writeToUiAppend(output, "getFileSettings File 02 AUTH-KEY RW Is: " + ACCESS_KEY_RW);
-                    if (ACCESS_KEY_RW != ACCESS_KEY0) {
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
-                        } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
-                        }
-                    }
-
-                    // write URL template to file 02 depending on radio button
-                    SDMSettings sdmSettings = new SDMSettings();
-                    sdmSettings.sdmEnabled = true; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
-                    sdmSettings.sdmMetaReadPerm = ACCESS_KEY2; // Set to a key to get encrypted PICC data
-                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypt FileData
-                    sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
-                    sdmSettings.sdmOptionEncryptFileData = true;
-                    byte[] ndefRecord = null;
-                    NdefTemplateMaster master = new NdefTemplateMaster();
-                    master.usesLRP = isLrpAuthenticationMode;
-                    master.fileDataLength = 48; // encrypted file data available. The timestamp is 19 bytes long, but we need multiples of 16 for this feature
-                    if (rbUid.isChecked()) {
-                        sdmSettings.sdmOptionUid = true;
-                        sdmSettings.sdmOptionReadCounter = false;
-                    } else if (rbCounter.isChecked()) {
-                        sdmSettings.sdmOptionUid = false;
-                        sdmSettings.sdmOptionReadCounter = true;
-                    } else {
-                        sdmSettings.sdmOptionUid = true;
-                        sdmSettings.sdmOptionReadCounter = true;
-                    }
-                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
-                    try {
-                        WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
-                    } catch (IOException e) {
-                        Log.e(TAG, "writeData IOException: " + e.getMessage());
-                        writeToUiAppend(output, "File 02h writeDataIOException: " + e.getMessage());
-                        writeToUiAppend(output, "Writing the NDEF URL Template FAILURE, Operation aborted");
-                        return;
-                    }
-                    writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
-
-                    // write the timestamp data (19 characters long + 5 characters '#1234'
-                    byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
-                    try {
-                        WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
-                    } catch (IOException e) {
-                        Log.e(TAG, "writeFileData IOException: " + e.getMessage());
-                        writeToUiAppend(output, "File 02h writeFileDataIOException: " + e.getMessage());
-                        writeToUiAppend(output, "Writing the File Data FAILURE, Operation aborted");
-                        return;
-                    }
-                    writeToUiAppend(output, "File 02h Writing the File Data SUCCESS");
-
-                    // check if we authenticated with the right key - to change the key settings we need the CAR key
-                    if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
-                        } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
-                        }
-                    }
-
-                    // change the auth key settings
-                    fileSettings02.sdmSettings = sdmSettings;
-                    fileSettings02.readWritePerm = ACCESS_KEY2;
-                    fileSettings02.changePerm = ACCESS_KEY0;
-                    fileSettings02.readPerm = ACCESS_EVERYONE;
-                    fileSettings02.writePerm = ACCESS_KEY2;
-                    try {
-                        ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
-                    } catch (IOException e) {
-                        Log.e(TAG, "ChangeFileSettings IOException: " + e.getMessage());
-                        writeToUiAppend(output, "ChangeFileSettings File 02 Error, Operation aborted");
-                        return;
-                    }
-                    writeToUiAppend(output, "File 02h Change File Settings SUCCESS");
-
-                } catch (IOException e) {
-                    Log.e(TAG, "Exception: " + e.getMessage());
-                    writeToUiAppend(output, "Exception: " + e.getMessage());
-                }
-                */
             }
 
         });

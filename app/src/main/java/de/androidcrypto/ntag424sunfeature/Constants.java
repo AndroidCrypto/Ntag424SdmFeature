@@ -9,5 +9,8 @@ public class Constants {
     public static final int APPLICATION_KEY_VERSION_DEFAULT = 0;
     public static final int APPLICATION_KEY_VERSION_NEW = 1;
 
+    // capability container in file 01
+    public static final byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000"); // Free Read & Write Access
+    public static final byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_R = Utils.hexStringToByteArray("000F20003A00340406E104010000FF"); // Free Read Access only, no Write Access
 
 }
