@@ -329,9 +329,12 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 if (fullPayload.contains("enc=")) {
                     isFileData = true;
                     // the encrypted file data is 96 characters hex data in our example
-                    // 6AA3587B6651DB460F2129AEC9E9C558CF540826B87D3008D9507013ABD80B7FFA4B8F18D22917237CD27590F0397FBB
+                    // setting length = 48: 6AA3587B6651DB460F2129AEC9E9C558CF540826B87D3008D9507013ABD80B7FFA4B8F18D22917237CD27590F0397FBB
+                    // setting length = 32: 3FF6D3C1B1E33F0B4E8AD272957DA63A890C80730EB5F37DD8642511824A720B 20.05.2024 11:31:05#1234********
                     startIndex = fullPayload.indexOf("enc=") + 4;
-                    encryptedFileData = fullPayload.substring(startIndex, startIndex + 96);
+                    System.out.println("fullPayload:" + fullPayload+ "#");
+                    //encryptedFileData = fullPayload.substring(startIndex, startIndex + 96);
+                    encryptedFileData = fullPayload.substring(startIndex, startIndex + 64);
                 }
 
                 // I do not check that the payload has all necessary fields here

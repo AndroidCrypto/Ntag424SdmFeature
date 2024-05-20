@@ -300,7 +300,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                     byte[] ndefRecord = null;
                     NdefTemplateMaster master = new NdefTemplateMaster();
                     master.usesLRP = isLrpAuthenticationMode;
-                    master.fileDataLength = 48; // encrypted file data available. The timestamp is 19 bytes long, but we need multiples of 16 for this feature
+                    master.fileDataLength = 32; // encrypted file data available. The timestamp is 19 bytes long, but we need multiples of 16 for this feature
                     if (rbUid.isChecked()) {
                         sdmSettings.sdmOptionUid = true;
                         sdmSettings.sdmOptionReadCounter = false;
