@@ -1,10 +1,17 @@
 package de.androidcrypto.ntag424sunfeature;
 
+import static net.bplearning.ntag424.constants.Ntag424.CC_FILE_NUMBER;
+import static net.bplearning.ntag424.constants.Ntag424.DATA_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY1;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
+
+import static de.androidcrypto.ntag424sunfeature.Utils.printData;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +40,7 @@ import net.bplearning.ntag424.DnaCommunicator;
 import net.bplearning.ntag424.command.ChangeFileSettings;
 import net.bplearning.ntag424.command.FileSettings;
 import net.bplearning.ntag424.command.GetFileSettings;
+import net.bplearning.ntag424.command.ReadData;
 import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
@@ -41,6 +49,8 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
@@ -215,29 +225,310 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                      * authentication again with the RW key.
                      */
 
+                    writeToUiAppend(output, Constants.DOUBLE_DIVIDER);
                     // authentication
                     boolean isLrpAuthenticationMode = false;
 
+                    writeToUiAppend(output, "Authentication with FACTORY ACCESS_KEY 0");
                     // what happens when we choose the wrong authentication scheme ?
-
-
-
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
+                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
+                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                            // try to run the LRP authentication
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
                         } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                            // any other error, print the error code and return
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
                             return;
                         }
                     }
+
+                    writeToUiAppend(output, Constants.SINGLE_DIVIDER);
+                    // check all other application keys (1..4) if they are FACTORY or CUSTOM
+                    int key1State = 0; // 0 = no auth, 1 = FACTORY key SUCCESS, 2 = CUSTOM key SUCCESS, 3 = UNKNOWN key, failure
+                    int key2State = 0;
+                    int key3State = 0;
+                    int key4State = 0;
+                    if (!isLrpAuthenticationMode) {
+                        // app key 1
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY1, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 1 is FACTORY key");
+                            key1State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY1, Constants.APPLICATION_KEY_1);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 1 is CUSTOM key");
+                                key1State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 1 has UNKNOWN key");
+                                key1State = 3;
+                            }
+                        }
+                        // app key 2
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY2, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 2 is FACTORY key");
+                            key2State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY2, Constants.APPLICATION_KEY_2);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 2 is CUSTOM key");
+                                key2State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 2 has UNKNOWN key");
+                                key2State = 3;
+                            }
+                        }
+                        // app key 3
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY3, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 3 is FACTORY key");
+                            key3State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY3, Constants.APPLICATION_KEY_3);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 3 is CUSTOM key");
+                                key3State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 3 has UNKNOWN key");
+                                key3State = 3;
+                            }
+                        }
+                        // app key 4
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 4 is FACTORY key");
+                            key4State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Constants.APPLICATION_KEY_4);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 4 is CUSTOM key");
+                                key4State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 4 has UNKNOWN key");
+                                key4State = 3;
+                            }
+                        }
+                    } else {
+                        // app key 1
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY1, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 1 is FACTORY key");
+                            key1State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY1, Constants.APPLICATION_KEY_1);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 1 is CUSTOM key");
+                                key1State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 1 has UNKNOWN key");
+                                key1State = 3;
+                            }
+                        }
+                        // app key 2
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY2, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 2 is FACTORY key");
+                            key2State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY2, Constants.APPLICATION_KEY_2);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 2 is CUSTOM key");
+                                key2State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 2 has UNKNOWN key");
+                                key2State = 3;
+                            }
+                        }
+                        // app key 3
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY3, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 3 is FACTORY key");
+                            key3State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY3, Constants.APPLICATION_KEY_3);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 3 is CUSTOM key");
+                                key3State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 3 has UNKNOWN key");
+                                key3State = 3;
+                            }
+                        }
+                        // app key 4
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "App Key 4 is FACTORY key");
+                            key4State = 1;
+                        } else {
+                            // try to authenticate with custom key
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY4, Constants.APPLICATION_KEY_4);
+                            if (success) {
+                                writeToUiAppend(output, "App Key 4 is CUSTOM key");
+                                key4State = 2;
+                            } else {
+                                writeToUiAppend(output, "App Key 4 has UNKNOWN key");
+                                key4State = 3;
+                            }
+                        }
+                    }
+                    writeToUiAppend(output, Constants.DOUBLE_DIVIDER);
+
+                    // silently authenticate with Access Key 0, should work
+                    if (!isLrpAuthenticationMode) {
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                    } else {
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                    }
+                    if (!success) {
+                        writeToUiAppend(output, "Error on Authentication with ACCESS KEY 0, aborted");
+                        return;
+                    }
+                    int lastAuthKeyNumber = 0;
+
+                    // get the file settings
+                    writeToUiAppend(output, "Get the File Settings");
+                    FileSettings fileSettings01;
+                    try {
+                        fileSettings01 = GetFileSettings.run(dnaC, CC_FILE_NUMBER);
+                    } catch (Exception e) {
+                        Log.e(TAG, "getFileSettings File 01 Exception: " + e.getMessage());
+                        writeToUiAppend(output, "getFileSettings File 01 Exception: " + e.getMessage());
+                        return;
+                    }
+                    writeToUiAppend(output, DnacFileSettingsDumper.run(CC_FILE_NUMBER, fileSettings01));
+                    writeToUiAppend(output, Constants.SINGLE_DIVIDER);
+
+                    FileSettings fileSettings02;
+                    try {
+                        fileSettings02 = GetFileSettings.run(dnaC, NDEF_FILE_NUMBER);
+                    } catch (Exception e) {
+                        Log.e(TAG, "getFileSettings File 02 Exception: " + e.getMessage());
+                        writeToUiAppend(output, "getFileSettings File 02 Exception: " + e.getMessage());
+                        return;
+                    }
+                    writeToUiAppend(output, DnacFileSettingsDumper.run(NDEF_FILE_NUMBER, fileSettings02));
+                    writeToUiAppend(output, Constants.SINGLE_DIVIDER);
+
+                    FileSettings fileSettings03;
+                    try {
+                        fileSettings03 = GetFileSettings.run(dnaC, DATA_FILE_NUMBER);
+                    } catch (Exception e) {
+                        Log.e(TAG, "getFileSettings File 03 Exception: " + e.getMessage());
+                        writeToUiAppend(output, "getFileSettings File 03 Exception: " + e.getMessage());
+                        return;
+                    }
+                    writeToUiAppend(output, DnacFileSettingsDumper.run(DATA_FILE_NUMBER, fileSettings03));
+                    writeToUiAppend(output, Constants.DOUBLE_DIVIDER);
+
+                    // read the content of each file
+                    // check which key in required to read the file
+                    int file01RAccess = fileSettings01.readPerm;
+                    if (file01RAccess == ACCESS_EVERYONE) {
+                        // do not need to run any authentication
+                    } else {
+                        // authenticate with file01RAccess key
+                        if (file01RAccess != lastAuthKeyNumber) {
+                            // the requested key is different from the last auth key
+                            // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
+
+                            // todo check for keyXState 1/2/3
+
+                            if (!isLrpAuthenticationMode) {
+                                success = AESEncryptionMode.authenticateEV2(dnaC, file01RAccess, Ntag424.FACTORY_KEY);
+                            } else {
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, file01RAccess, Ntag424.FACTORY_KEY);
+                            }
+                            if (!success) {
+                                writeToUiAppend(output, "Error on Authentication with key " + file01RAccess  + ", aborted");
+                                return;
+                            }
+                            lastAuthKeyNumber = file01RAccess;
+                        }
+                    }
+                    byte[] fileContent01 = runReadData(CC_FILE_NUMBER, 0, 32);
+                    writeToUiAppend(output, Utils.printData("content of file 01", fileContent01));
+                    writeToUiAppend(output, Constants.SINGLE_DIVIDER);
+
+                    // check which key in required to read the file
+                    int file02RAccess = fileSettings02.readPerm;
+                    if (file02RAccess == ACCESS_EVERYONE) {
+                        // do not need to run any authentication
+                    } else {
+                        // authenticate with file02RAccess key
+                        if (file02RAccess != lastAuthKeyNumber) {
+                            // the requested key is different from the last auth key
+                            // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
+
+                            // todo check for keyXState 1/2/3
+
+                            if (!isLrpAuthenticationMode) {
+                                success = AESEncryptionMode.authenticateEV2(dnaC, file02RAccess, Ntag424.FACTORY_KEY);
+                            } else {
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, file02RAccess, Ntag424.FACTORY_KEY);
+                            }
+                            if (!success) {
+                                writeToUiAppend(output, "Error on Authentication with key " + file02RAccess  + ", aborted");
+                                return;
+                            }
+                            lastAuthKeyNumber = file02RAccess;
+                        }
+                    }
+                    byte[] fileContent02 = runReadData(NDEF_FILE_NUMBER, 0, 256);
+                    writeToUiAppend(output, Utils.printData("content of file 02", fileContent02));
+                    writeToUiAppend(output,"");
+                    writeToUiAppend(output, "ASCII Data: " + new String(fileContent02, StandardCharsets.UTF_8));
+                    writeToUiAppend(output, Constants.SINGLE_DIVIDER);
+
+                    // check which key in required to read the file
+                    int file03RAccess = fileSettings03.readPerm;
+                    if (file03RAccess == ACCESS_EVERYONE) {
+                        // do not need to run any authentication
+                    } else {
+                        // authenticate with file03RAccess key
+                        if (file03RAccess != lastAuthKeyNumber) {
+                            // the requested key is different from the last auth key
+                            // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
+
+                            // todo check for keyXState 1/2/3
+
+                            if (!isLrpAuthenticationMode) {
+                                success = AESEncryptionMode.authenticateEV2(dnaC, file03RAccess, Ntag424.FACTORY_KEY);
+                            } else {
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, file03RAccess, Ntag424.FACTORY_KEY);
+                            }
+                            if (!success) {
+                                writeToUiAppend(output, "Error on Authentication with key " + file03RAccess  + ", aborted");
+                                return;
+                            }
+                            lastAuthKeyNumber = file03RAccess;
+                        }
+                    }
+                    byte[] fileContent03 = runReadData( DATA_FILE_NUMBER, 0, 128);
+                    writeToUiAppend(output, Utils.printData("content of file 03", fileContent03));
+                    writeToUiAppend(output, Constants.SINGLE_DIVIDER);
+
 
 
 /*
@@ -362,6 +653,17 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
             }
         });
         worker.start();
+    }
+
+    private byte[] runReadData(int fileNum, int offset, int length) {
+        byte[] data = null;
+        try {
+            data = ReadData.run(dnaC, fileNum, offset, length);
+        } catch (IOException e) {
+            Log.e(TAG, "readData IOException: " + e.getMessage());
+            writeToUiAppend(output, "readData IOException: " + e.getMessage());
+        }
+        return data;
     }
 
     /**

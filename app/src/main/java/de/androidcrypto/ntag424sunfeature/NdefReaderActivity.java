@@ -2,8 +2,8 @@ package de.androidcrypto.ntag424sunfeature;
 
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
-import static de.androidcrypto.ntag424sunfeature.Utils.DOUBLE_DIVIDER;
-import static de.androidcrypto.ntag424sunfeature.Utils.SINGLE_DIVIDER;
+import static de.androidcrypto.ntag424sunfeature.Constants.DOUBLE_DIVIDER;
+import static de.androidcrypto.ntag424sunfeature.Constants.SINGLE_DIVIDER;
 import static de.androidcrypto.ntag424sunfeature.Utils.printData;
 
 import android.content.Context;

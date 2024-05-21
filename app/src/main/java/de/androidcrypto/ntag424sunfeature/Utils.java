@@ -23,9 +23,6 @@ import java.util.List;
 
 public class Utils {
 
-    public static final String SINGLE_DIVIDER = "----------------------------";
-    public static final String DOUBLE_DIVIDER = "============================";
-
     public static String removeAllNonAlphaNumeric(String s) {
         if (s == null) {
             return null;

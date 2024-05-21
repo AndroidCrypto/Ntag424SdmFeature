@@ -1,6 +1,7 @@
 package net.bplearning.ntag424;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 import net.bplearning.ntag424.command.IsoSelectFile;
@@ -14,6 +15,10 @@ import net.bplearning.ntag424.util.Crypto;
 import net.bplearning.ntag424.util.ThrowableFunction;
 
 public class DnaCommunicator {
+
+	// added by AndroidCrypto
+	public byte[] returnCode; // 2 bytes like '9100h' or '91AEh'
+
 	protected ThrowableFunction<byte[], byte[], IOException> transceiver;
 	protected EncryptionMode encryptionMode;
 	protected byte[] activeTransactionIdentifier;
@@ -41,6 +46,12 @@ public class DnaCommunicator {
 		log("BytesSending", bytesToSend);
 		byte[] results = transceiver.apply(bytesToSend);
 		log("BytesReceived", results);
+
+		// added by AndroidCrypto
+		returnCode = null;
+		if ((results != null) && (results.length > 1)) {
+			returnCode = Arrays.copyOfRange(results, results.length - 2, results.length);
+		}
 		return results;
 	}
 
