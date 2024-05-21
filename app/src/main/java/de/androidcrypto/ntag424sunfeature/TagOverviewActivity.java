@@ -198,7 +198,9 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                     dnaC.beginCommunication();
 
                     /**
-                     * These steps are running - assuming that all keys are 'default' keys filled with 16 00h values
+                     * These steps are running - this activity tries to get an overview about the tag
+                     *
+                     * assuming that all keys are 'default' keys filled with 16 00h values
                      * 1) Authenticate with Application Key 00h in AES mode
                      * 2) If the authentication in AES mode fails try to authenticate in LRP mode
                      * 3) Write an URL template to file 02 with Uid and/or Counter plus CMAC
@@ -215,6 +217,11 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
+
+                    // what happens when we choose the wrong authentication scheme ?
+
+
+
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
@@ -232,6 +239,8 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                         }
                     }
 
+
+/*
                     // get File Settings for File 2 to get the key number necessary for writing (key 0 or key 2 ?)
                     FileSettings fileSettings02 = null;
                     try {
@@ -341,6 +350,8 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                         return;
                     }
                     writeToUiAppend(output, "File 02h Change File Settings SUCCESS");
+
+ */
 
                 } catch (IOException e) {
                     Log.e(TAG, "Exception: " + e.getMessage());
