@@ -166,9 +166,9 @@ Btw.: the named website is run by "Arx Research, Inc.". The source code is avail
 |  File 02h   |       Eh        |        1h        |           1h            |
 |  File 03h   |       2h        |        3h        |           3h            |
 
-**SDM Meta Read Access Key**: 02h
+**SDM Meta Read Access Key**: 03h (used for Encryption of PICC data)
 
-**SDM File Read Access Key**: 03h
+**SDM File Read Access Key**: 04h (used for Encryption of File data and CMAC calculation)
 
 **SDM Counter Retrieve Access Key**: 04h
 

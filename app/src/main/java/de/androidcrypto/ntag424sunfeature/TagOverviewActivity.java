@@ -42,9 +42,9 @@ import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
 
-public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = PlaintextSunActivity.class.getSimpleName();
+    private static final String TAG = TagOverviewActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -56,7 +56,7 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_plaintext_sun);
+        setContentView(R.layout.activity_tag_overview);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -181,7 +181,7 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
     }
 
     private void runWorker() {
-        Log.d(TAG, "Plaintext Sun Activity Worker");
+        Log.d(TAG, "Tag Overview Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -365,7 +365,7 @@ public class PlaintextSunActivity extends AppCompatActivity implements NfcAdapte
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(PlaintextSunActivity.this, MainActivity.class);
+                Intent intent = new Intent(TagOverviewActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;

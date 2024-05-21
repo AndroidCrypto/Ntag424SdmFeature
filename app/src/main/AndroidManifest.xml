@@ -28,6 +28,9 @@
             android:name=".EncryptedFileSunActivity"
             android:exported="false" />
         <activity
+            android:name=".PlaintextReadCounterLimitSunActivity"
+            android:exported="false" />
+        <activity
             android:name=".EncryptedFileSunCustomKeysActivity"
             android:exported="false" />
         <activity
@@ -35,6 +38,9 @@
             android:exported="false" />
         <activity
             android:name=".NdefReaderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TagOverviewActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Button menu1Prepare, menu2PlaintextSun, menu3EncryptedSun, menu4EncryptedFileSun, menu5Unset;
-    private Button menu6NdefReader, menu8EncryptedFileSunCustomKeys;
+    private Button menu6NdefReader, menu7PlaintextReadCounterLimitSun, menu8EncryptedFileSunCustomKeys;
+    private Button menu9TagOverview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
         menu4EncryptedFileSun = findViewById(R.id.btnMenu4EncryptedFileSun);
         menu5Unset = findViewById(R.id.btnMenu5Unset);
         menu6NdefReader = findViewById(R.id.btnMenu6NdefReader);
+        menu7PlaintextReadCounterLimitSun = findViewById(R.id.btnMenu7PlaintextReadCounterLimitSun);
         menu8EncryptedFileSunCustomKeys = findViewById(R.id.btnMenu8EncryptedFileSunCustomKeys);
+        menu9TagOverview = findViewById(R.id.btnMenu9TagInformation);
 
         menu1Prepare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,11 +113,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        menu7PlaintextReadCounterLimitSun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "menu7PlaintextReadCounterLimitSun");
+                Intent intent = new Intent(MainActivity.this, PlaintextReadCounterLimitSunActivity.class);
+                startActivity(intent);
+            }
+        });
+
         menu8EncryptedFileSunCustomKeys.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "menu8EncryptedFileSunCustomKeys");
                 Intent intent = new Intent(MainActivity.this, EncryptedFileSunCustomKeysActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        menu9TagOverview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "menu9TagOverview");
+                Intent intent = new Intent(MainActivity.this, TagOverviewActivity.class);
                 startActivity(intent);
             }
         });

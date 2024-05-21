@@ -277,7 +277,44 @@
                 app:dividerInsetEnd="8dp"
                 app:dividerInsetStart="8dp" />
 
+            <TextView
+                android:id="@+id/tvMenu7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="7 Setup Plaintext Read Counter Limit SUN Message"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tvMenu7Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Write the URL template for a Plaintext SUN Message to file 2 on the tag. A Read Counter Limit of '3' is setup to prevent more tag readings."
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/btnMenu7PlaintextReadCounterLimitSun"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/application_color_light_background_green"
+                android:text="Setup Plaintext with Read Counter Limit SUN Message" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
 
             <TextView
                 android:id="@+id/tvMenu8"
@@ -310,6 +347,45 @@
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/application_color_light_background_green"
                 android:text="Setup Encrypted File SUN Message with Custom Keys" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
+
+            <TextView
+                android:id="@+id/tvMenu9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="9 Tag Information"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMenu9Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Gives an overview about the tag"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/btnMenu9TagInformation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/application_color_light_background_green"
+                android:text="Overview about the tag" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
