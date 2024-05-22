@@ -32,6 +32,7 @@ public class DnacFileSettingsDumper {
                 sb.append("sdmMetaReadPerm:             ").append(fs.sdmSettings.sdmMetaReadPerm).append("\n");
                 sb.append("sdmFileReadPerm:             ").append(fs.sdmSettings.sdmFileReadPerm).append("\n");
                 sb.append("sdmReadCounterRetrievalPerm: ").append(fs.sdmSettings.sdmReadCounterRetrievalPerm).append("\n");
+/*
                 sb.append("sdmUidOffset:         ").append(fs.sdmSettings.sdmUidOffset).append("\n");
                 sb.append("sdmUidOffset:         ").append(fs.sdmSettings.sdmUidOffset).append("\n");
                 sb.append("sdmUidOffset:         ").append(fs.sdmSettings.sdmUidOffset).append("\n");
@@ -42,6 +43,7 @@ public class DnacFileSettingsDumper {
                 sb.append("sdmEncOffset:         ").append(fs.sdmSettings.sdmEncOffset).append("\n");
                 sb.append("sdmEncLength:         ").append(fs.sdmSettings.sdmEncLength).append("\n");
                 sb.append("sdmReadCounterLimit:  ").append(fs.sdmSettings.sdmReadCounterLimit).append("\n");
+ */
             }
             return sb.toString();
         }

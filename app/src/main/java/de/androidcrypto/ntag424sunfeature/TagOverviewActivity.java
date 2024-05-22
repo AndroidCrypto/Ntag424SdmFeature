@@ -395,7 +395,7 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                     }
                     writeToUiAppend(output, Constants.DOUBLE_DIVIDER);
 
-                    // silently authenticate with Access Key 0, should work
+                    // silent authenticate with Access Key 0, should work
                     if (!isLrpAuthenticationMode) {
                         success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     } else {

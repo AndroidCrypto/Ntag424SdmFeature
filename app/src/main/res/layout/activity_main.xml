@@ -60,7 +60,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the Capability Container (CC) to file 1 and an URL template to file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:text="Write the Capability Container (CC) to file 1 and an URL template to file 2 on the tag."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -99,7 +99,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for a Plaintext SUN Message to file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:text="Write the URL template for a Plaintext SUN Message to file 2 on the tag."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -138,7 +138,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for an Encrypted SUN Message to file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:text="Write the URL template for an Encrypted SUN Message to file 2 on the tag."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -177,7 +177,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -216,7 +216,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the default Capability Container (CC) to file 1 and clear file 2 on the tag. Assuming that the file is free writable (Write Access Key is 'E')."
+                android:text="Write the default Capability Container (CC) to file 1 and clear file 2 on the tag."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -333,7 +333,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. This is using custom keys."
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. This is using CUSTOM keys."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />

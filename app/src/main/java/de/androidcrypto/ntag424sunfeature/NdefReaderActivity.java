@@ -344,9 +344,19 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                     writeToUiAppend(output, "Counter:" + counter);
                     writeToUiAppend(output, "CMAC:" + cmac);
                     if (isCmacValidated) {
-                        writeToUiAppend(output, "The CMAC is VALIDATED");
+                        writeToUiAppend(output, "The CMAC is VALIDATED (AES)");
                     } else {
-                        writeToUiAppend(output, "The CMAC is VOID");
+                        //writeToUiAppend(output, "The CMAC is VOID (AES)");
+                        // try to run LRP mode
+                        piccData = new PiccData(uidBytes, readCounterInt, true);
+                        piccData.setMacFileKey(cmacKey);
+                        cmacCalc = piccData.performShortCMAC(new byte[0]);// MAC on PICC-only data
+                        isCmacValidated = Arrays.equals(cmacCalc, cmacBytes);
+                        if (isCmacValidated) {
+                            writeToUiAppend(output, "The CMAC is VALIDATED (LRP)");
+                        } else {
+                            writeToUiAppend(output, "The CMAC is VOID (LRP)");
+                        }
                     }
                 } else {
                     // encrypted PICC data
@@ -382,6 +392,16 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                             writeToUiAppend(output, "The CMAC is VALIDATED");
                         } else {
                             writeToUiAppend(output, "The CMAC is VOID");
+                            // try to run LRP mode
+                            piccData = PiccData.decodeFromEncryptedBytes(encryptedPiccDataBytes, encryptedFileDataKey, true);
+                            piccData.setMacFileKey(cmacKey);
+                            cmacCalc = piccData.performShortCMAC(new byte[0]);// MAC on PICC-only data
+                            isCmacValidated = Arrays.equals(cmacCalc, cmacBytes);
+                            if (isCmacValidated) {
+                                writeToUiAppend(output, "The CMAC is VALIDATED (LRP)");
+                            } else {
+                                writeToUiAppend(output, "The CMAC is VOID (LRP)");
+                            }
                         }
                     } else {
                         // we do have encrypted file data as well

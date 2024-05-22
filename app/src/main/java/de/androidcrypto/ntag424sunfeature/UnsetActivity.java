@@ -333,8 +333,17 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                     if (success) {
                         writeToUiAppend(output, "Change Application Key 3 SUCCESS");
                     } else {
-                        writeToUiAppend(output, "Change Application Key 3 FAILURE, Operation aborted");
-                        return;
+                        writeToUiAppend(output, "Change Application Key 3 FAILURE (maybe the key is already the FACTORY key ?)");
+                        // silent authenticate with Access Key 0 as we had a failure
+                        if (!isLrpAuthenticationMode) {
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        } else {
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        }
+                        if (!success) {
+                            writeToUiAppend(output, "Error on Authentication with ACCESS KEY 0, aborted");
+                            return;
+                        }
                     }
 
                     // change application key 4
@@ -348,16 +357,14 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                     if (success) {
                         writeToUiAppend(output, "Change Application Key 4 SUCCESS");
                     } else {
-                        writeToUiAppend(output, "Change Application Key 4 FAILURE, Operation aborted");
-                        return;
+                        writeToUiAppend(output, "Change Application Key 4 FAILURE (maybe the key is already the FACTORY key ?)");
                     }
-
-
-
                 } catch (IOException e) {
                     Log.e(TAG, "Exception: " + e.getMessage());
                     writeToUiAppend(output, "Exception: " + e.getMessage());
                 }
+                writeToUiAppend(output, "== FINISHED ==");
+                vibrateShort();
             }
         });
         worker.start();
