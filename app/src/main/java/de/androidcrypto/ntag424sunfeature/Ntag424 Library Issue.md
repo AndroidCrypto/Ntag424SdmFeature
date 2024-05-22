@@ -124,3 +124,42 @@ CMAC calculated: 5fd76de4bd942dfc
 The CMAC is validated: true                                                                                        
 */   
 ```
+
+
+Other issue regarding Encrypted PICC data (UID only) + encrypted File data
+
+
+```plaintext
+Encrypted PICC (UID + Read Counter) + File Data (success)
+Communicator: Data before encryption: 4020E2D1FF223200005700005700004000009D0000
+Communicator: BytesSending: 905F000029020767DA18BD8BFEDF2C099A9535C5360E7E92C1ED5DED993D4B1F4A1D841738A29FB2A2159F90969200
+Communicator: BytesReceived: D43D4BF9107CD21F9100
+
+Encrypted PICC (UID only) + File Data (fails)
+Communicator: Data before encryption: 4020E291FF223200005700005700004000009D0000
+Communicator: BytesSending: 905F000029020A56843EB510FB259509E8A617800903DF5308B7BF3812A6F15B75D11F3027A8A2C0F52A22596A0B00
+Communicator: BytesReceived: 919E
+Communicator: Decrypted data:
+net.bplearning.ntag424.exception.ProtocolException: Invalid status result: 919E
+
+Difference in data send is here:
+Communicator: Data before encryption: 4020E2 D1 FF223200005700005700004000009D0000 (success)
+Communicator: Data before encryption: 4020E2 91 FF223200005700005700004000009D0000 (failure)
+                                             |
+                                      |         40h = File Option
+                                        |       20h = Access Rights Part 1
+                                           |    E2h = Access Rights Part 2
+                                             |  SDM Options
+                                                Bit 7: 1 = UID enbled
+                                                Bit 6: 1 = Read Counter enabled
+                                                Bit 5: 1 = Read Counter Limit enabled                                              
+                                                Bit 4: 1 = SDMENCFileData enabled
+                                                Bit 3: 0 = RFU
+                                                Bit 2: 0 = RFU
+                                                Bit 1: 0 = RFU
+                                                Bit 0: 1 = Encoding mode ASCII enabled
+                                                For SDM with UID, File Data + ASCII we need to set the bits 0, 4 + 7 = 91h
+                                                
+```
+
+

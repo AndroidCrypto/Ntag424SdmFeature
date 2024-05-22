@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 
 public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
@@ -221,19 +222,28 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
+
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
+                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
+                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                            // try to run the LRP authentication
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
                         } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                            // any other error, print the error code and return
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
                             return;
                         }
                     }
@@ -261,6 +271,16 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                         // do nothing, skip authentication
                     } else {
                         if (ACCESS_KEY_RW != ACCESS_KEY0) {
+                            if (!isLrpAuthenticationMode) {
+                                success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                            } else {
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                            }
+                            if (!success) {
+                                writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
+                                return;
+                            }
+/*
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
@@ -280,6 +300,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                                     return;
                                 }
                             }
+ */
                         }
                     }
 
@@ -318,7 +339,11 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                     // write the timestamp data (19 characters long + 5 characters '#1234'
                     byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
                     try {
-                        WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
+                        if (isLrpAuthenticationMode) {
+                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, (87 + 16)); // LRP Encrypted PICC data is 16 bytes longer
+                        } else {
+                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
+                        }
                     } catch (IOException e) {
                         Log.e(TAG, "writeFileData IOException: " + e.getMessage());
                         writeToUiAppend(output, "File 02h writeFileDataIOException: " + e.getMessage());
@@ -329,6 +354,16 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
 
                     // check if we authenticated with the right key - to change the key settings we need the CAR key
                     if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
+                        if (!isLrpAuthenticationMode) {
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
+                        } else {
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
+                        }
+                        if (!success) {
+                            writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
+                            return;
+                        }
+                        /*
                         success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
                         //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                         if (success) {
@@ -347,6 +382,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                                 return;
                             }
                         }
+                         */
                     }
 
                     // change the auth key settings

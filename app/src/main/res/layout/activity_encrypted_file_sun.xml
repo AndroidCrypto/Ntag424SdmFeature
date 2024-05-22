@@ -90,8 +90,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:checked="false"
-                    android:enabled="false"
-                    android:visibility="gone"
+                    android:enabled="true"
+                    android:visibility="visible"
                     android:text="(PICC with UID only) + File data + CMAC (endpoint is not working)" />
 
                 <RadioButton
@@ -99,8 +99,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:checked="false"
-                    android:enabled="false"
-                    android:visibility="gone"
+                    android:enabled="true"
+                    android:visibility="visible"
                     android:text="(PICC with Counter only) + File data + CMAC (endpoint is not working)" />
 
                 <RadioButton

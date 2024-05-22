@@ -48,18 +48,18 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Date;
 
-public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class EncryptedFileSunCustomKeysActivity_Org extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = EncryptedFileSunCustomKeysActivity.class.getSimpleName();
+    private static final String TAG = EncryptedFileSunCustomKeysActivity_Org.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
     private DnaCommunicator dnaC = new DnaCommunicator();
     private NfcAdapter mNfcAdapter;
     private IsoDep isoDep;
     private byte[] tagIdByte;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,28 +224,19 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
-
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
-                            // try to run the LRP authentication
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
+                        writeToUiAppend(output, "AES Authentication FAILURE");
+                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "LRP Authentication SUCCESS");
+                            isLrpAuthenticationMode = true;
                         } else {
-                            // any other error, print the error code and return
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                            writeToUiAppend(output, "LRP Authentication FAILURE");
+                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
                             return;
                         }
                     }
@@ -273,16 +264,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                         // do nothing, skip authentication
                     } else {
                         if (ACCESS_KEY_RW != ACCESS_KEY0) {
-                            if (!isLrpAuthenticationMode) {
-                                success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            } else {
-                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            }
-                            if (!success) {
-                                writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
-                                return;
-                            }
-/*
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
@@ -302,7 +283,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                                     return;
                                 }
                             }
- */
                         }
                     }
 
@@ -337,15 +317,11 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                         return;
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
-                    //System.out.println("*** NdefRecord: " + new String(ndefRecord, StandardCharsets.UTF_8));
+
                     // write the timestamp data (19 characters long + 5 characters '#1234'
                     byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
                     try {
-                        if (isLrpAuthenticationMode) {
-                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, (87 + 16)); // LRP Encrypted PICC data is 16 bytes longer
-                        } else {
-                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
-                        }
+                        WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
                     } catch (IOException e) {
                         Log.e(TAG, "writeFileData IOException: " + e.getMessage());
                         writeToUiAppend(output, "File 02h writeFileDataIOException: " + e.getMessage());
@@ -356,16 +332,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
 
                     // check if we authenticated with the right key - to change the key settings we need the CAR key
                     if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
-                        if (!isLrpAuthenticationMode) {
-                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        } else {
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        }
-                        if (!success) {
-                            writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
-                            return;
-                        }
-                        /*
                         success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
                         //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                         if (success) {
@@ -384,7 +350,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                                 return;
                             }
                         }
-                         */
                     }
 
                     // change the auth key settings
@@ -438,7 +403,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(EncryptedFileSunCustomKeysActivity.this, MainActivity.class);
+                Intent intent = new Intent(EncryptedFileSunCustomKeysActivity_Org.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;

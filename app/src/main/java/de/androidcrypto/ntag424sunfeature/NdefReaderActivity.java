@@ -276,10 +276,9 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 // data for Encrypted PICC with File data
                 // *** AES :fullPayload: tag?picc_data=34A4571ACF9F4B463AC557E34CEE739A&enc=3CEE32C3D9009A307A90EEAFADA8EEAA3A6BEB94F0A6371276F6B818728DF56B&cmac=F7E67C721D044911
                 // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A375807883947BD810C5765712:276643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
-                // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A3758078
-                //                                                                     83947BD810C5765712:27
-                //                                                                     &enc=
-                //                                                                          6643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
+                // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A375807883947BD810C5765712:276643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
+                //                                                                                        &enc=
+                //
                 int fullPayloadLength = fullPayload.length();
                 String uid = "";
                 String counter = "";
