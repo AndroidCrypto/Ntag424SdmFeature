@@ -4,6 +4,7 @@ import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sunfeature.Constants.DOUBLE_DIVIDER;
 import static de.androidcrypto.ntag424sunfeature.Constants.SINGLE_DIVIDER;
+import static de.androidcrypto.ntag424sunfeature.Utils.hexStringToByteArray;
 import static de.androidcrypto.ntag424sunfeature.Utils.printData;
 
 import android.content.Context;
@@ -264,12 +265,28 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 }
 
                 // start parsing the payload
+                System.out.println("*** fullPayload: " + fullPayload);
+
+                // data for Encrypted PICC without File data
+                // *** AES: fullPayload: tag?picc_data=9BDAB6EC1F5E6FE0DAAA4FB6FAF4BBDC&cmac=6AEB1D3483BCA7EE
+                // *** LRP: fullPayload: tag?picc_data=705BC0158C66B38CC8ECE99847698915D1AD0280FBB8BE51&cmac=1A2DB44BBBCD95B0
+                // PICC length AES: 32 chars = 16 bytes, LRP: 48 chars = 24 bytes
+
+
+                // data for Encrypted PICC with File data
+                // *** AES :fullPayload: tag?picc_data=34A4571ACF9F4B463AC557E34CEE739A&enc=3CEE32C3D9009A307A90EEAFADA8EEAA3A6BEB94F0A6371276F6B818728DF56B&cmac=F7E67C721D044911
+                // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A375807883947BD810C5765712:276643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
+                // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A3758078
+                //                                                                     83947BD810C5765712:27
+                //                                                                     &enc=
+                //                                                                          6643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
                 int fullPayloadLength = fullPayload.length();
                 String uid = "";
                 String counter = "";
                 String cmac = "";
                 String encryptedPiccData = "";
                 String encryptedFileData = "";
+                // PiccData length is 32 when AES and 48 when LRP encryption
                 boolean isUid = false;
                 boolean isCounter = false;
                 boolean isCmac = false;
@@ -299,14 +316,32 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 }
                 if (fullPayload.contains("picc_data=")) {
                     isPiccData = true;
-                    // the picc data is 32 characters hex data
+                    // the picc data is 32 characters hex data (AES) or 48 characters (LRP)
                     startIndex = fullPayload.indexOf("picc_data=") + 10;
-                    encryptedPiccData = fullPayload.substring(startIndex, startIndex + 32);
+                    // in the first step I'm trying to read 48 characters and convert them to a bytes array. If there are field dividers included in the string like
+                    // '&cmac' the conversion will fail, then I'm trying to use 32 characters instead
+                    encryptedPiccData = fullPayload.substring(startIndex, startIndex + 48); // LRP
+                    boolean isHexNumeric = Utils.isHexNumeric(encryptedPiccData);
+                    if (isHexNumeric == false) {
+                        // try with 32 characters for AES
+                        encryptedPiccData = fullPayload.substring(startIndex, startIndex + 32); // AES
+                        isHexNumeric = Utils.isHexNumeric(encryptedPiccData);
+                        if (isHexNumeric == false) {
+                            Log.e(TAG, "Tried to find encrypted PICC data but none is matching with LRP (48 characters) or AES (32 characters), operation aborted");
+                            writeToUiAppend(output, "Tried to find encrypted PICC data but none is matching with LRP (48 characters) or AES (32 characters), operation aborted");
+                            return;
+                        } else {
+                            Log.d(TAG, "Encrypted PICC Data found for AES");
+                            isLrpAuthentication = false;
+                        }
+                    } else {
+                        Log.d(TAG, "Encrypted PICC Data found for LRP");
+                        isLrpAuthentication = true;
+                    }
                 }
                 if (fullPayload.contains("enc=")) {
                     isFileData = true;
-                    // the encrypted file data is 96 characters hex data in our example
-                    // setting length = 48: 6AA3587B6651DB460F2129AEC9E9C558CF540826B87D3008D9507013ABD80B7FFA4B8F18D22917237CD27590F0397FBB
+                    // the encrypted file data is 64 characters hex data in our example
                     // setting length = 32: 3FF6D3C1B1E33F0B4E8AD272957DA63A890C80730EB5F37DD8642511824A720B 20.05.2024 11:31:05#1234********
                     startIndex = fullPayload.indexOf("enc=") + 4;
                     System.out.println("fullPayload:" + fullPayload+ "#");
@@ -368,6 +403,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         writeToUiAppend(output, "Could not find PICC data, aborted");
                         return;
                     }
+                    System.out.println(Utils.printData("encryptedPiccDataBytes", encryptedPiccDataBytes) + " isLrp: " + isLrpAuthentication);
                     piccData = PiccData.decodeFromEncryptedBytes(encryptedPiccDataBytes, encryptedFileDataKey, isLrpAuthentication);
                     byte[] uidDecrypted = piccData.getUid();
                     int readCounterDecrypted = piccData.getReadCounter();

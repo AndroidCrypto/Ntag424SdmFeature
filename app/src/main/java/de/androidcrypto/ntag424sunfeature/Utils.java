@@ -23,6 +23,20 @@ import java.util.List;
 
 public class Utils {
 
+    // this checks if a String sequence is a valid hext string
+    public static boolean isHexNumeric(String cadena) {
+        if ( cadena.length() == 0 ||
+                (cadena.charAt(0) != '-' && Character.digit(cadena.charAt(0), 16) == -1))
+            return false;
+        if ( cadena.length() == 1 && cadena.charAt(0) == '-' )
+            return false;
+
+        for ( int i = 1 ; i < cadena.length() ; i++ )
+            if ( Character.digit(cadena.charAt(i), 16) == -1 )
+                return false;
+        return true;
+    }
+
     public static String removeAllNonAlphaNumeric(String s) {
         if (s == null) {
             return null;

@@ -314,7 +314,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                         return;
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
-
+                    //System.out.println("*** NdefRecord: " + new String(ndefRecord, StandardCharsets.UTF_8));
                     // write the timestamp data (19 characters long + 5 characters '#1234'
                     byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
                     try {
