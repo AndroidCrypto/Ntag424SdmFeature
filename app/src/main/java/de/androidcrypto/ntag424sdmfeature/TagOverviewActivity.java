@@ -1,4 +1,4 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
 import static net.bplearning.ntag424.constants.Ntag424.CC_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Ntag424.DATA_FILE_NUMBER;
@@ -9,9 +9,6 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY1;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
-
-import static de.androidcrypto.ntag424sunfeature.Utils.printData;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,16 +34,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
-import net.bplearning.ntag424.command.ChangeFileSettings;
 import net.bplearning.ntag424.command.FileSettings;
 import net.bplearning.ntag424.command.GetFileSettings;
 import net.bplearning.ntag424.command.ReadData;
-import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
 import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
-import net.bplearning.ntag424.sdm.NdefTemplateMaster;
-import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 

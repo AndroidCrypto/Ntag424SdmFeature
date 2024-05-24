@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Ntag424SunFeature"
+rootProject.name = "Ntag424SdmFeature"
 include ':app'

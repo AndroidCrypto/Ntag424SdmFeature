@@ -1,19 +1,18 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
 import static net.bplearning.ntag424.constants.Ntag424.CC_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
-import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
-import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
-import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_DEFAULT;
-import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_VERSION_NEW;
-import static de.androidcrypto.ntag424sunfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_DEFAULT;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_NEW;
+import static de.androidcrypto.ntag424sdmfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +45,6 @@ import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
 import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
-import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;

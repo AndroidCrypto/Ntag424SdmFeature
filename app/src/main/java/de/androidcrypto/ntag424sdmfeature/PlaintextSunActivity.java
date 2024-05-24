@@ -1,4 +1,4 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;

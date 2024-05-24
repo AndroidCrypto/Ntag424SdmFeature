@@ -1,11 +1,9 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
-import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
 import android.content.Context;
@@ -43,17 +41,10 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
 
-public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = EncryptedFileSunCustomKeysActivity.class.getSimpleName();
+    private static final String TAG = EncryptedSunActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -65,7 +56,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_encrypted_file_sun_custom_keys);
+        setContentView(R.layout.activity_encrypted_sun);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -190,7 +181,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
     }
 
     private void runWorker() {
-        Log.d(TAG, "Encrypted File SUN Activity Worker");
+        Log.d(TAG, "Encrypted Sun Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -224,28 +215,19 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
-
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
-                            // try to run the LRP authentication
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
+                        writeToUiAppend(output, "AES Authentication FAILURE");
+                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
+                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        if (success) {
+                            writeToUiAppend(output, "LRP Authentication SUCCESS");
+                            isLrpAuthenticationMode = true;
                         } else {
-                            // any other error, print the error code and return
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                            writeToUiAppend(output, "LRP Authentication FAILURE");
+                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
                             return;
                         }
                     }
@@ -273,16 +255,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                         // do nothing, skip authentication
                     } else {
                         if (ACCESS_KEY_RW != ACCESS_KEY0) {
-                            if (!isLrpAuthenticationMode) {
-                                success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            } else {
-                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            }
-                            if (!success) {
-                                writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
-                                return;
-                            }
-/*
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
@@ -302,21 +274,20 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                                     return;
                                 }
                             }
- */
                         }
                     }
 
                     // write URL template to file 02 depending on radio button
                     SDMSettings sdmSettings = new SDMSettings();
                     sdmSettings.sdmEnabled = true; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
-                    sdmSettings.sdmMetaReadPerm = ACCESS_KEY3; // Set to a key to get encrypted PICC data
-                    sdmSettings.sdmFileReadPerm = ACCESS_KEY4; // Used to create the MAC and Encrypted File data
+                    sdmSettings.sdmMetaReadPerm = ACCESS_KEY2; // Set to a key to get encrypted PICC data
+                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2; // Used to create the MAC and Encrypted File data
                     sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
-                    sdmSettings.sdmOptionEncryptFileData = true;
+                    sdmSettings.sdmOptionEncryptFileData = false;
                     byte[] ndefRecord = null;
                     NdefTemplateMaster master = new NdefTemplateMaster();
                     master.usesLRP = isLrpAuthenticationMode;
-                    master.fileDataLength = 32; // encrypted file data available. The timestamp is 19 bytes long, but we need multiples of 16 for this feature
+                    master.fileDataLength = 0; // no (encrypted) file data
                     if (rbUid.isChecked()) {
                         sdmSettings.sdmOptionUid = true;
                         sdmSettings.sdmOptionReadCounter = false;
@@ -327,7 +298,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                         sdmSettings.sdmOptionUid = true;
                         sdmSettings.sdmOptionReadCounter = true;
                     }
-                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
+                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
                     } catch (IOException e) {
@@ -337,35 +308,9 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                         return;
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
-                    //System.out.println("*** NdefRecord: " + new String(ndefRecord, StandardCharsets.UTF_8));
-                    // write the timestamp data (19 characters long + 5 characters '#1234'
-                    byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
-                    try {
-                        if (isLrpAuthenticationMode) {
-                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, (87 + 16)); // LRP Encrypted PICC data is 16 bytes longer
-                        } else {
-                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG, "writeFileData IOException: " + e.getMessage());
-                        writeToUiAppend(output, "File 02h writeFileDataIOException: " + e.getMessage());
-                        writeToUiAppend(output, "Writing the File Data FAILURE, Operation aborted");
-                        return;
-                    }
-                    writeToUiAppend(output, "File 02h Writing the File Data SUCCESS");
 
-                    // check if we authenticated with the right key - to change the key settings we need the CAR key
+                    // check if we authenticated with the right key - here we need the CAR key
                     if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
-                        if (!isLrpAuthenticationMode) {
-                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        } else {
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        }
-                        if (!success) {
-                            writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
-                            return;
-                        }
-                        /*
                         success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
                         //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                         if (success) {
@@ -384,7 +329,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                                 return;
                             }
                         }
-                         */
                     }
 
                     // change the auth key settings
@@ -396,7 +340,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                     try {
                         ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
                     } catch (IOException e) {
-                        e.printStackTrace();
                         Log.e(TAG, "ChangeFileSettings IOException: " + e.getMessage());
                         writeToUiAppend(output, "ChangeFileSettings File 02 Error, Operation aborted");
                         return;
@@ -414,18 +357,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
         worker.start();
     }
 
-    // gives an 19 byte long timestamp dd.MM.yyyy HH:mm:ss
-    public static String getTimestampLog() {
-        // gives a 19 character long string
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return ZonedDateTime
-                    .now(ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ofPattern("dd.MM.uuuu HH:mm:ss"));
-        } else {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
-        }
-    }
-
     /**
      * section for options menu
      */
@@ -438,7 +369,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(EncryptedFileSunCustomKeysActivity.this, MainActivity.class);
+                Intent intent = new Intent(EncryptedSunActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;

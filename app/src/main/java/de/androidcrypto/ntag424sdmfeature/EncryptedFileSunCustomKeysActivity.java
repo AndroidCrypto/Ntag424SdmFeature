@@ -1,9 +1,11 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
+import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
 import android.content.Context;
@@ -41,10 +43,17 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Date;
 
-public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = PlaintextReadCounterLimitSunActivity.class.getSimpleName();
+    private static final String TAG = EncryptedFileSunCustomKeysActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -56,7 +65,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_plaintext_read_counter_limit_sun);
+        setContentView(R.layout.activity_encrypted_file_sun_custom_keys);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -181,7 +190,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
     }
 
     private void runWorker() {
-        Log.d(TAG, "Plaintext Read Counter Limit Sun Activity Worker");
+        Log.d(TAG, "Encrypted File SUN Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -201,7 +210,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                      * These steps are running - assuming that all keys are 'default' keys filled with 16 00h values
                      * 1) Authenticate with Application Key 00h in AES mode
                      * 2) If the authentication in AES mode fails try to authenticate in LRP mode
-                     * 3) Write an URL template to file 02 with Uid and/or Counter plus CMAC
+                     * 3) Write an URL template to file 02 with PICC (Uid and/or Counter) plus CMAC
                      * 4) Get existing file settings for file 02
                      * 5) Save the modified file settings back to the tag
                      */
@@ -215,19 +224,28 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
+
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
+                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
+                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                            // try to run the LRP authentication
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
                         } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                            // any other error, print the error code and return
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
                             return;
                         }
                     }
@@ -255,6 +273,16 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                         // do nothing, skip authentication
                     } else {
                         if (ACCESS_KEY_RW != ACCESS_KEY0) {
+                            if (!isLrpAuthenticationMode) {
+                                success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                            } else {
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
+                            }
+                            if (!success) {
+                                writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
+                                return;
+                            }
+/*
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
                             //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
@@ -274,29 +302,32 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                                     return;
                                 }
                             }
+ */
                         }
                     }
 
                     // write URL template to file 02 depending on radio button
                     SDMSettings sdmSettings = new SDMSettings();
                     sdmSettings.sdmEnabled = true; // at this point we are just preparing the templated but do not enable the SUN/SDM feature
-                    sdmSettings.sdmMetaReadPerm = ACCESS_EVERYONE; // Set to a key to get encrypted PICC data
-                    sdmSettings.sdmFileReadPerm = ACCESS_KEY2;     // Used to create the MAC and Encrypted File data
+                    sdmSettings.sdmMetaReadPerm = ACCESS_KEY3; // Set to a key to get encrypted PICC data
+                    sdmSettings.sdmFileReadPerm = ACCESS_KEY4; // Used to create the MAC and Encrypted File data
                     sdmSettings.sdmReadCounterRetrievalPerm = ACCESS_NONE; // Not sure what this is for
-                    sdmSettings.sdmOptionEncryptFileData = false;
-                    sdmSettings.sdmOptionReadCounterLimit = true;
-                    sdmSettings.sdmReadCounterLimit = 3; // here fixed to 3 readings
+                    sdmSettings.sdmOptionEncryptFileData = true;
                     byte[] ndefRecord = null;
                     NdefTemplateMaster master = new NdefTemplateMaster();
                     master.usesLRP = isLrpAuthenticationMode;
-                    master.fileDataLength = 0; // no (encrypted) file data
+                    master.fileDataLength = 32; // encrypted file data available. The timestamp is 19 bytes long, but we need multiples of 16 for this feature
                     if (rbUid.isChecked()) {
-                        ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&cmac={MAC}", sdmSettings);
+                        sdmSettings.sdmOptionUid = true;
+                        sdmSettings.sdmOptionReadCounter = false;
                     } else if (rbCounter.isChecked()) {
-                        ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                        sdmSettings.sdmOptionUid = false;
+                        sdmSettings.sdmOptionReadCounter = true;
                     } else {
-                        ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                        sdmSettings.sdmOptionUid = true;
+                        sdmSettings.sdmOptionReadCounter = true;
                     }
+                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
                     } catch (IOException e) {
@@ -306,9 +337,35 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                         return;
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
+                    //System.out.println("*** NdefRecord: " + new String(ndefRecord, StandardCharsets.UTF_8));
+                    // write the timestamp data (19 characters long + 5 characters '#1234'
+                    byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
+                    try {
+                        if (isLrpAuthenticationMode) {
+                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, (87 + 16)); // LRP Encrypted PICC data is 16 bytes longer
+                        } else {
+                            WriteData.run(dnaC, NDEF_FILE_NUMBER, fileData, 87);
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "writeFileData IOException: " + e.getMessage());
+                        writeToUiAppend(output, "File 02h writeFileDataIOException: " + e.getMessage());
+                        writeToUiAppend(output, "Writing the File Data FAILURE, Operation aborted");
+                        return;
+                    }
+                    writeToUiAppend(output, "File 02h Writing the File Data SUCCESS");
 
-                    // check if we authenticated with the right key - here we need the CAR key
+                    // check if we authenticated with the right key - to change the key settings we need the CAR key
                     if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
+                        if (!isLrpAuthenticationMode) {
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
+                        } else {
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
+                        }
+                        if (!success) {
+                            writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
+                            return;
+                        }
+                        /*
                         success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
                         //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                         if (success) {
@@ -327,6 +384,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                                 return;
                             }
                         }
+                         */
                     }
 
                     // change the auth key settings
@@ -338,6 +396,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                     try {
                         ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
                     } catch (IOException e) {
+                        e.printStackTrace();
                         Log.e(TAG, "ChangeFileSettings IOException: " + e.getMessage());
                         writeToUiAppend(output, "ChangeFileSettings File 02 Error, Operation aborted");
                         return;
@@ -355,6 +414,18 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
         worker.start();
     }
 
+    // gives an 19 byte long timestamp dd.MM.yyyy HH:mm:ss
+    public static String getTimestampLog() {
+        // gives a 19 character long string
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return ZonedDateTime
+                    .now(ZoneId.systemDefault())
+                    .format(DateTimeFormatter.ofPattern("dd.MM.uuuu HH:mm:ss"));
+        } else {
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
+        }
+    }
+
     /**
      * section for options menu
      */
@@ -367,7 +438,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(PlaintextReadCounterLimitSunActivity.this, MainActivity.class);
+                Intent intent = new Intent(EncryptedFileSunCustomKeysActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;

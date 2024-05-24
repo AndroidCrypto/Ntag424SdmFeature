@@ -1,11 +1,10 @@
-package de.androidcrypto.ntag424sunfeature;
+package de.androidcrypto.ntag424sdmfeature;
 
-import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_3;
-import static de.androidcrypto.ntag424sunfeature.Constants.APPLICATION_KEY_4;
-import static de.androidcrypto.ntag424sunfeature.Constants.DOUBLE_DIVIDER;
-import static de.androidcrypto.ntag424sunfeature.Constants.SINGLE_DIVIDER;
-import static de.androidcrypto.ntag424sunfeature.Utils.hexStringToByteArray;
-import static de.androidcrypto.ntag424sunfeature.Utils.printData;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
+import static de.androidcrypto.ntag424sdmfeature.Constants.DOUBLE_DIVIDER;
+import static de.androidcrypto.ntag424sdmfeature.Constants.SINGLE_DIVIDER;
+import static de.androidcrypto.ntag424sdmfeature.Utils.printData;
 
 import android.content.Context;
 import android.content.Intent;

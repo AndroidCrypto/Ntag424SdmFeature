@@ -1,4 +1,4 @@
-# NTAG 424 DNA Secure Unique Number ("SUN") Feature
+# NTAG 424 DNA Secure Dynamic Messaging ("SDM") Feature
 
 https://medium.com/@androidcrypto/demystify-the-secure-unique-number-feature-with-ntag-424-dna-nfc-tags-android-java-b947c482913c
 
@@ -18,17 +18,19 @@ as well as data assurances on authenticity, integrity and even confidentiality, 
 securing physical tag presence.*
 
 In the documentation you will find two namings for the same feature:
-- **Secure Unique Number** ("SUN")
 - **Secure Dynamic Message** ("SDM")
+- **Secure Unique Number** ("SUN")
 
 ## Technical information's about NTAG 424 DNA tags
 
 In this document I'm always writing "NTAG 424 DNA" but there are "NTAG 424 DNA Tag Tamper" available as 
-well. The SUN/SDM feature is working on both tag types.
+well. The SDM/SUN feature is working on both tag types.
 
 NTAG 424 DNA datasheet: https://www.nxp.com/docs/en/data-sheet/NT4H2421Tx.pdf
 
 NTAG 424 DNA and NTAG 424 DNA TagTamper features and hints: https://www.nxp.com/docs/en/application-note/AN12196.pdf
+
+Symmetric Key Diversification AN10922: https://www.nxp.com/docs/en/application-note/AN10922.pdf
 
 The tag has a predefined application and 3 predefined Standard Data files:
 - **File 01h**: 32 bytes size, suitable for the "Capability Container" data (necessary for NDEF messages). The Communication mode is **Plain Communication**.

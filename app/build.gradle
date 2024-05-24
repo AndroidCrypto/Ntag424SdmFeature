@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'de.androidcrypto.ntag424sunfeature'
+    namespace 'de.androidcrypto.ntag424sdmfeature'
     compileSdk 34
 
     defaultConfig {
-        applicationId "de.androidcrypto.ntag424sunfeature"
+        applicationId "de.androidcrypto.ntag424sdmfeature"
         minSdk 21
         targetSdk 34
         versionCode 1
