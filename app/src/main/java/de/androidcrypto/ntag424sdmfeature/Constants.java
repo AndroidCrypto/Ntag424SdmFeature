@@ -10,6 +10,8 @@ public class Constants {
     public static final byte[] APPLICATION_KEY_2 = Utils.hexStringToByteArray("A2000000000000000000000000000000");
     public static final byte[] APPLICATION_KEY_3 = Utils.hexStringToByteArray("A3000000000000000000000000000000");
     public static final byte[] APPLICATION_KEY_4 = Utils.hexStringToByteArray("A4000000000000000000000000000000");
+    public static final byte[] MASTER_APPLICATION_KEY_FOR_DERIVATION = Utils.hexStringToByteArray("A9000000000000000000000000000000");
+    public static final byte[] SYSTEM_IDENTIFIER_FOR_DERIVATION = Utils.hexStringToByteArray("666F6F");
     public static final int APPLICATION_KEY_VERSION_DEFAULT = 0;
     public static final int APPLICATION_KEY_VERSION_NEW = 1;
 

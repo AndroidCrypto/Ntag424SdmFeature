@@ -13,7 +13,9 @@ import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_DEFAULT;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_NEW;
+import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DERIVATION;
 import static de.androidcrypto.ntag424sdmfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_R;
+import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DERIVATION;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +30,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -38,11 +41,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
+import net.bplearning.ntag424.card.KeyInfo;
 import net.bplearning.ntag424.command.ChangeKey;
+import net.bplearning.ntag424.command.GetCardUid;
 import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
 import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
+import net.bplearning.ntag424.exception.ProtocolException;
 import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
@@ -51,6 +57,7 @@ import java.io.IOException;
 public class PrepareActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
     private static final String TAG = PrepareActivity.class.getSimpleName();
+    private RadioButton rbKey4Static, rbKey4Derived;
     private com.google.android.material.textfield.TextInputEditText output;
 
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -72,6 +79,8 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(myToolbar);
 
+        rbKey4Static = findViewById(R.id.rbKey4Static);
+        rbKey4Derived = findViewById(R.id.rbKey4Derived);
         output = findViewById(R.id.etOutput);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -297,9 +306,33 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                     }
 
                     // change application key 4
+                    // the key source depends on the radio button, either use a static Key 4 or a derived Key 4 (tag UID)
+
+                    byte[] newKey4 = null;
+                    if (rbKey4Derived.isChecked()) {
+                        // get the real card UID
+                        byte[] realTagUid = null;
+                        try {
+                            realTagUid = GetCardUid.run(dnaC);
+                            Log.d(TAG, Utils.printData("real Tag UID", realTagUid));
+                        } catch (ProtocolException e) {
+                            writeToUiAppend(output, "Could not read the real Tag UID, aborted");
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                            return;
+                        }
+                        // derive the Master Application key with real Tag UID
+                        KeyInfo keyInfo = new KeyInfo();
+                        keyInfo.key = MASTER_APPLICATION_KEY_FOR_DERIVATION;
+                        keyInfo.systemIdentifier = SYSTEM_IDENTIFIER_FOR_DERIVATION; // static value for this application
+                        byte[] derivedKey = keyInfo.generateKeyForCardUid(realTagUid);
+                        Log.d(TAG, Utils.printData("real Tag UID", realTagUid));
+                    } else {
+                        newKey4 = APPLICATION_KEY_4.clone();
+                        Log.d(TAG, "Using a STATIC Key 4)");
+                    }
                     success = false;
                     try {
-                        ChangeKey.run(dnaC, ACCESS_KEY4, APPLICATION_KEY_DEFAULT , APPLICATION_KEY_4, APPLICATION_KEY_VERSION_NEW);
+                        ChangeKey.run(dnaC, ACCESS_KEY4, APPLICATION_KEY_DEFAULT , newKey4, APPLICATION_KEY_VERSION_NEW);
                         success = true;
                     } catch (IOException e) {
                         Log.e(TAG, "ChangeKey 4 IOException: " + e.getMessage());

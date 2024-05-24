@@ -346,6 +346,9 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                     }
 
                     // change application key 4
+
+                    // todo change a diverisifcated key back to default
+
                     success = false;
                     try {
                         ChangeKey.run(dnaC, ACCESS_KEY4, APPLICATION_KEY_4, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_DEFAULT);

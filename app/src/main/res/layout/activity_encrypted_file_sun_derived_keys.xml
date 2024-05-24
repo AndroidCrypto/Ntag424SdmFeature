@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PrepareActivity">
+    tools:context=".EncryptedFileSunDerivedKeysActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="1 Prepare the tag for NDEF operations"
+                android:text="10 Encrypted File SUN Feature with Derived Keys"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Write the Capability Container and URL template"
+                android:text="Write the URL template for Encrypted File SUN using DERIVED keys"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the modified Capability Container (CC) to file 1 and the URL template to file 2 on the tag. Assuming that the files are writable after an authentication with Default Keys (Write Access Key is '0h', 16 * '00h')"
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. The file data is a timestamp and 5 additional characters. This is using DERIVED key for CMAC and File Data."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Select the Key Number 4 Source"
+                android:text="Select the Fields"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -86,18 +86,29 @@
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/rbKey4Static"
+                    android:id="@+id/rbFieldUid"
                     android:layout_width="wrap_content"
-                    android:layout_height="70dp"
-                    android:checked="true"
-                    android:text="Use a STATIC Key 4 (for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader)" />
+                    android:layout_height="40dp"
+                    android:checked="false"
+                    android:enabled="false"
+                    android:visibility="gone"
+                    android:text="(PICC with UID only) + File data + CMAC (endpoint is not working)" />
 
                 <RadioButton
-                    android:id="@+id/rbKey4Derived"
+                    android:id="@+id/rbFieldCounter"
                     android:layout_width="wrap_content"
-                    android:layout_height="70dp"
+                    android:layout_height="40dp"
                     android:checked="false"
-                    android:text="Use a Tag UID DERIVED Key 4 (for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader)" />
+                    android:enabled="false"
+                    android:visibility="gone"
+                    android:text="(PICC with Counter only) + File data + CMAC (endpoint is not working)" />
+
+                <RadioButton
+                    android:id="@+id/rbFieldUidCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:checked="true"
+                    android:text="(PICC with UID + Counter) + File data + CMAC (ENDPOINT Is NOT WORKING, use NDEF Reader instead)" />
 
             </RadioGroup>
 

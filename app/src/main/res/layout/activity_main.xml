@@ -356,6 +356,46 @@
                 app:dividerInsetStart="8dp" />
 
             <TextView
+                android:id="@+id/tvMenu10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="10 Setup Encrypted File SUN Message with Derived Keys"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMenu10Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. This is using DERIVED keys."
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/btnMenu10EncryptedFileSunDerivedKeys"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/application_color_light_background_green"
+                android:text="Setup Encrypted File SUN Message with Derived Keys" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
+
+
+            <TextView
                 android:id="@+id/tvMenu9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
