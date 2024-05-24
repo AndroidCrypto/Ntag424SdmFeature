@@ -11,6 +11,7 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_DEFAULT;
+import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_DEFAULT;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_NEW;
 import static de.androidcrypto.ntag424sdmfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT;
 
@@ -323,7 +324,7 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                     // change application key 3
                     success = false;
                     try {
-                        ChangeKey.run(dnaC, ACCESS_KEY3, APPLICATION_KEY_3, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_NEW);
+                        ChangeKey.run(dnaC, ACCESS_KEY3, APPLICATION_KEY_3, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_DEFAULT);
                         success = true;
                     } catch (IOException e) {
                         Log.e(TAG, "ChangeKey 3 IOException: " + e.getMessage());
@@ -347,7 +348,7 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                     // change application key 4
                     success = false;
                     try {
-                        ChangeKey.run(dnaC, ACCESS_KEY4, APPLICATION_KEY_4, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_NEW);
+                        ChangeKey.run(dnaC, ACCESS_KEY4, APPLICATION_KEY_4, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_DEFAULT);
                         success = true;
                     } catch (IOException e) {
                         Log.e(TAG, "ChangeKey 4 IOException: " + e.getMessage());
