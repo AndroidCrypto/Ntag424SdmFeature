@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="1 Prepare the tag for NDEF operations"
+                android:text="Prepare the tag for NDEF operations"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -47,6 +47,7 @@
                 android:id="@+id/tvMenu1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:padding="16dp"
                 android:text="Write the Capability Container and URL template"
                 android:textAlignment="center"
@@ -58,12 +59,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the modified Capability Container (CC) to file 1 and the URL template to file 2 on the tag. Assuming that the files are writable after an authentication with Default Keys (Write Access Key is '0h', 16 * '00h')"
+                android:text="Write the modified Capability Container (CC) to file 1 and the URL template to file 2 on the tag"
                 android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="normal" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvMenu2"
@@ -90,14 +91,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="70dp"
                     android:checked="true"
-                    android:text="Use a STATIC Key 4 (for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader)" />
+                    android:text="Use a STATIC Key 4 (used for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader instead)" />
 
                 <RadioButton
                     android:id="@+id/rbKey4Derived"
                     android:layout_width="wrap_content"
                     android:layout_height="70dp"
                     android:checked="false"
-                    android:text="Use a Tag UID DERIVED Key 4 (for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader)" />
+                    android:text="Use a Tag UID - DIVERSIFIED Key 4 (used for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader instead)" />
 
             </RadioGroup>
 

@@ -8,9 +8,6 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
 
-import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DERIVATION;
-import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DERIVATION;
-
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -35,16 +32,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
-import net.bplearning.ntag424.card.KeyInfo;
 import net.bplearning.ntag424.command.ChangeFileSettings;
 import net.bplearning.ntag424.command.FileSettings;
-import net.bplearning.ntag424.command.GetCardUid;
 import net.bplearning.ntag424.command.GetFileSettings;
 import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
 import net.bplearning.ntag424.encryptionmode.LRPEncryptionMode;
-import net.bplearning.ntag424.exception.ProtocolException;
 import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 

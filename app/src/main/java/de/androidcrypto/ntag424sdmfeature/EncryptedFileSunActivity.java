@@ -280,27 +280,6 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                                 writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
                                 return;
                             }
-/*
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "AES Authentication SUCCESS");
-                            } else {
-                                writeToUiAppend(output, "AES Authentication FAILURE");
-                                writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                                //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                                if (success) {
-                                    writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                    isLrpAuthenticationMode = true;
-                                } else {
-                                    writeToUiAppend(output, "LRP Authentication FAILURE");
-                                    writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                    return;
-                                }
-                            }
- */
                         }
                     }
 
@@ -363,26 +342,6 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                             writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
                             return;
                         }
-                        /*
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
-                        } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
-                        }
-                         */
                     }
 
                     // change the auth key settings

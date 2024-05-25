@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="1 Prepare the tag for NDEF operations"
+                android:text="Prepare the tag for NDEF operations"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="2 Setup Plaintext SUN Message"
+                android:text="Setup Plaintext SUN Message"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="3 Setup Encrypted SUN Message"
+                android:text="Setup Encrypted SUN Message"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -165,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="4 Setup Encrypted File SUN Message"
+                android:text="Setup Encrypted File SUN Message"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -192,44 +192,7 @@
                 android:backgroundTint="@color/application_color_light_background_green"
                 android:text="Setup Encrypted File SUN Message" />
 
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:dividerInsetEnd="8dp"
-                app:dividerInsetStart="8dp" />
 
-            <TextView
-                android:id="@+id/tvMenu5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="5 Unset the SUN Feature (fabric settings)"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvMenu5Info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="Write the default Capability Container (CC) to file 1 and clear file 2 on the tag."
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="normal" />
-
-            <Button
-                android:id="@+id/btnMenu5Unset"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/application_color_light_background_green"
-                android:text="Unset the SUN feature (fabric settings)" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
@@ -243,7 +206,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="6 NDEF Reader"
+                android:text="NDEF Reader"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -282,7 +245,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="7 Setup Plaintext Read Counter Limit SUN Message"
+                android:text="Setup Plaintext Read Counter Limit SUN Message"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -321,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="8 Setup Encrypted File SUN Message with Custom Keys"
+                android:text="Setup Encrypted File SUN Message with Custom Keys"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -360,7 +323,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="10 Setup Encrypted File SUN Message with Derived Keys"
+                android:text="Setup Encrypted File SUN Message with Derived Keys"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -400,7 +363,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="9 Tag Information"
+                android:text="Tag Overview"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -426,6 +389,52 @@
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/application_color_light_background_green"
                 android:text="Overview about the tag" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
+
+            <TextView
+                android:id="@+id/tvMenu5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Unset the SDM Feature (fabric settings)"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMenu5Info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Write the default Capability Container (CC) to file 1 and clear file 2 on the tag."
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/btnMenu5Unset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/application_color_light_background_green"
+                android:text="Unset the SUN feature (fabric settings)" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:dividerInsetEnd="8dp"
+                app:dividerInsetStart="8dp" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"

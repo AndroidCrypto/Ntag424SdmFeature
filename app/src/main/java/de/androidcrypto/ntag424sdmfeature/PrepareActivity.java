@@ -13,9 +13,9 @@ import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_DEFAULT;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_NEW;
-import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DERIVATION;
+import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_R;
-import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DERIVATION;
+import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DIVERSIFYING;
 
 import android.content.Context;
 import android.content.Intent;
@@ -53,6 +53,7 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class PrepareActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
@@ -215,24 +216,34 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                      * 2) If the authentication in AES mode fails try to authenticate in LRP mode
                      * 3) Write the modified Capability Container content to file 01 (Read Only Access to file 02 = NDEF file)
                      * 4) Write an URL template to file 02
+                     * 5) Change the application keys 3 and 4
+                     * 6) If rbKey4Derived.isChecked diversify key 4 depending on tag UID instead of a static key
                      */
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
+
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                    //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
+                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
+                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                            // try to run the LRP authentication
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
                         } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                            // any other error, print the error code and return
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
                             return;
                         }
                     }
@@ -272,22 +283,15 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
 
                     // we are changing the application keys 3 and 4 to work with custom keys
                     // to change the keys we need an authentication with application key 0 = master application key
-                    // authentication
-                    success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                    if (success) {
-                        writeToUiAppend(output, "AES Authentication SUCCESS");
+                    // silent authentication
+                    if (!isLrpAuthenticationMode) {
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
                         success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
-                        } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                            return;
-                        }
+                    }
+                    if (!success) {
+                        writeToUiAppend(output, "Error on Authentication with ACCESS KEY 0, aborted");
+                        return;
                     }
 
                     // change application key 3
@@ -322,13 +326,14 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         }
                         // derive the Master Application key with real Tag UID
                         KeyInfo keyInfo = new KeyInfo();
-                        keyInfo.key = MASTER_APPLICATION_KEY_FOR_DERIVATION;
-                        keyInfo.systemIdentifier = SYSTEM_IDENTIFIER_FOR_DERIVATION; // static value for this application
-                        byte[] derivedKey = keyInfo.generateKeyForCardUid(realTagUid);
-                        Log.d(TAG, Utils.printData("real Tag UID", realTagUid));
+                        keyInfo.diversifyKeys = true;
+                        keyInfo.key = MASTER_APPLICATION_KEY_FOR_DIVERSIFYING.clone();
+                        keyInfo.systemIdentifier = SYSTEM_IDENTIFIER_FOR_DIVERSIFYING; // static value for this application
+                        newKey4  = keyInfo.generateKeyForCardUid(realTagUid);
+                        Log.d(TAG, Utils.printData("Using a DIVERSIFED Key 4", newKey4));
                     } else {
                         newKey4 = APPLICATION_KEY_4.clone();
-                        Log.d(TAG, "Using a STATIC Key 4)");
+                        Log.d(TAG, Utils.printData("Using a STATIC Key 4", newKey4));
                     }
                     success = false;
                     try {
@@ -338,7 +343,11 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         Log.e(TAG, "ChangeKey 4 IOException: " + e.getMessage());
                     }
                     if (success) {
-                        writeToUiAppend(output, "Change Application Key 4 SUCCESS");
+                        if (rbKey4Derived.isChecked()) {
+                            writeToUiAppend(output, "Change Application Key 4 to DIVERSIFIED key SUCCESS");
+                        } else {
+                            writeToUiAppend(output, "Change Application Key 4 to CUSTOM key SUCCESS");
+                        }
                     } else {
                         writeToUiAppend(output, "Change Application Key 4 FAILURE, Operation aborted");
                         return;
