@@ -235,7 +235,7 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
                         // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                        if (Arrays.equals(dnaC.getLastCommandResult().data, Constants.PERMISSION_DENIED_ERROR)) {
                             // try to run the LRP authentication
                             success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             if (success) {
@@ -243,14 +243,14 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                                 isLrpAuthenticationMode = true;
                             } else {
                                 writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                                 writeToUiAppend(output, "Authentication not possible, Operation aborted");
                                 return;
                             }
                         } else {
                             // any other error, print the error code and return
                             writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                             return;
                         }
                     }
@@ -337,7 +337,7 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                                     Log.d(TAG, Utils.printData("real Tag UID", realTagUid));
                                 } catch (ProtocolException e) {
                                     writeToUiAppend(output, "Could not read the real Tag UID, aborted");
-                                    writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                    writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                                     return;
                                 }
                                 // diversify the Master Application key with real Tag UID
@@ -434,7 +434,7 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                                     Log.d(TAG, Utils.printData("real Tag UID", realTagUid));
                                 } catch (ProtocolException e) {
                                     writeToUiAppend(output, "Could not read the real Tag UID, aborted");
-                                    writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                    writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                                     return;
                                 }
                                 // diversify the Master Application key with real Tag UID

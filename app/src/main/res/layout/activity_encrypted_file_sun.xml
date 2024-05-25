@@ -89,20 +89,20 @@
                 <RadioButton
                     android:id="@+id/rbFieldUid"
                     android:layout_width="wrap_content"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:checked="false"
-                    android:enabled="true"
+                    android:enabled="false"
                     android:visibility="visible"
-                    android:text="(PICC with UID only) + File data + CMAC (endpoint is not working, use NDEF Reader instead)" />
+                    android:text="(PICC with UID only) + File data + CMAC (option not allowed, deactivated)" />
 
                 <RadioButton
                     android:id="@+id/rbFieldCounter"
                     android:layout_width="wrap_content"
-                    android:layout_height="60dp"
+                    android:layout_height="50dp"
                     android:checked="false"
-                    android:enabled="true"
+                    android:enabled="false"
                     android:visibility="visible"
-                    android:text="(PICC with Counter only) + File data + CMAC (endpoint is not working, use NDEF Reader instead)" />
+                    android:text="(PICC with Counter only) + File data + CMAC (option not allowed, deactivated)" />
 
                 <RadioButton
                     android:id="@+id/rbFieldUidCounter"

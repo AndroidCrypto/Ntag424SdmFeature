@@ -220,6 +220,11 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                      * authentication again with the RW key.
                      */
 
+                    /**
+                     * Enabling Secure Dynamic Messaging encryption (SDMOptions[Bit 4] set to 1b) is not allowed if
+                     * not both SDMReadCtr and UID are mirrored (i.e. SDMOptions[Bit 7] and SDMOptions[Bit 6] must be set to 1b)
+                     */
+
                     // authentication
                     boolean isLrpAuthenticationMode = false;
 
@@ -228,7 +233,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
                         // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                        if (Arrays.equals(dnaC.getLastCommandResult().data, Constants.PERMISSION_DENIED_ERROR)) {
                             // try to run the LRP authentication
                             success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             if (success) {
@@ -236,14 +241,14 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                                 isLrpAuthenticationMode = true;
                             } else {
                                 writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                                 writeToUiAppend(output, "Authentication not possible, Operation aborted");
                                 return;
                             }
                         } else {
                             // any other error, print the error code and return
                             writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                             return;
                         }
                     }

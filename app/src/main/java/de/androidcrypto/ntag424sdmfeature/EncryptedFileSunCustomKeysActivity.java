@@ -230,7 +230,8 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
                         // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                        //if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                        if (Arrays.equals(dnaC.getLastCommandResult().data, Constants.PERMISSION_DENIED_ERROR)) {
                             // try to run the LRP authentication
                             success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             if (success) {
@@ -238,14 +239,14 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                                 isLrpAuthenticationMode = true;
                             } else {
                                 writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                                 writeToUiAppend(output, "Authentication not possible, Operation aborted");
                                 return;
                             }
                         } else {
                             // any other error, print the error code and return
                             writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
                             return;
                         }
                     }

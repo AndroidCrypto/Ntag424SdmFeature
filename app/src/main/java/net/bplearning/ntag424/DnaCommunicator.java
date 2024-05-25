@@ -1,7 +1,6 @@
 package net.bplearning.ntag424;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import net.bplearning.ntag424.command.IsoSelectFile;
@@ -15,16 +14,14 @@ import net.bplearning.ntag424.util.Crypto;
 import net.bplearning.ntag424.util.ThrowableFunction;
 
 public class DnaCommunicator {
-
-	// added by AndroidCrypto
-	public byte[] returnCode; // 2 bytes like '9100h' or '91AEh'
-
 	protected ThrowableFunction<byte[], byte[], IOException> transceiver;
 	protected EncryptionMode encryptionMode;
 	protected byte[] activeTransactionIdentifier;
 	protected int activeKeyNumber;
 	protected int commandCounter;
 	protected Consumer<String> logger = (val) -> {}; // Default to an empty logger
+
+	protected CommandResult lastCommandResult = null; // Result of the previous command
 
 	public void log(String value) {
 		logger.accept(value);
@@ -46,12 +43,6 @@ public class DnaCommunicator {
 		log("BytesSending", bytesToSend);
 		byte[] results = transceiver.apply(bytesToSend);
 		log("BytesReceived", results);
-
-		// added by AndroidCrypto
-		returnCode = null;
-		if ((results != null) && (results.length > 1)) {
-			returnCode = Arrays.copyOfRange(results, results.length - 2, results.length);
-		}
 		return results;
 	}
 
@@ -104,6 +95,9 @@ public class DnaCommunicator {
 
 	public static byte LENGTH_ALL = 0x00;
 
+	/** Returns the result of the latest command.  Note that this is primarily for retrieving the status bytes, as the data may be encrypted. */
+	public CommandResult getLastCommandResult() { return lastCommandResult; }
+
 	/**
 	 * Runs a standard ISO/IEC7816-4 communication frame
 	 * @param instructionClass
@@ -132,7 +126,8 @@ public class DnaCommunicator {
 
 		byte[] results = transceive(command);
 
-		return new CommandResult(results);
+		lastCommandResult = new CommandResult(results);
+		return lastCommandResult;
 	}
 
 	/**
@@ -164,6 +159,11 @@ public class DnaCommunicator {
 	 * @throws ProtocolException
 	 */
 	public CommandResult nxpMacCommand(byte cmd, byte[] hdr, byte[] data) throws IOException, ProtocolException {
+		if(!isLoggedIn()) {
+			// Section 8.2.3.5 - if no active session send plain
+			return nxpPlainCommand(cmd, hdr, data);
+		}
+
         // PREPARE MAC DATA
 		byte[] cipherBase = new byte[] {
             cmd,
@@ -222,6 +222,11 @@ public class DnaCommunicator {
 	 * @throws ProtocolException
 	 */
 	public CommandResult nxpEncryptedCommand(byte cmd, byte[] hdr, byte[] data) throws IOException {
+		if(!isLoggedIn()) {
+			// Section 8.2.3.5 - if no active session send plain
+			return nxpPlainCommand(cmd, hdr, data);
+		}
+
 		byte[] encryptedData;
 		if(data == null || data.length == 0) {
 			encryptedData = data;
