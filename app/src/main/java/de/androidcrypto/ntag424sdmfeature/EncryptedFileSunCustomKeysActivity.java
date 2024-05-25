@@ -190,7 +190,7 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
     }
 
     private void runWorker() {
-        Log.d(TAG, "Encrypted File SUN Activity Worker");
+        Log.d(TAG, "Encrypted File SUN Custom Keys Activity Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -282,27 +282,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                                 writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
                                 return;
                             }
-/*
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "AES Authentication SUCCESS");
-                            } else {
-                                writeToUiAppend(output, "AES Authentication FAILURE");
-                                writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                                //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                                if (success) {
-                                    writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                    isLrpAuthenticationMode = true;
-                                } else {
-                                    writeToUiAppend(output, "LRP Authentication FAILURE");
-                                    writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                    return;
-                                }
-                            }
- */
                         }
                     }
 

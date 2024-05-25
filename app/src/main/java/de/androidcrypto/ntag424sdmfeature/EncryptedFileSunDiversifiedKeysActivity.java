@@ -51,9 +51,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 
-public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
+public class EncryptedFileSunDiversifiedKeysActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    private static final String TAG = EncryptedFileSunDerivedKeysActivity.class.getSimpleName();
+    private static final String TAG = EncryptedFileSunDiversifiedKeysActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUid, rbCounter, rbUidCounter;
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -65,7 +65,7 @@ public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity imple
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_encrypted_file_sun_derived_keys);
+        setContentView(R.layout.activity_encrypted_file_sun_diversified_keys);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -190,7 +190,7 @@ public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity imple
     }
 
     private void runWorker() {
-        Log.d(TAG, "Encrypted File SUN Activity Worker");
+        Log.d(TAG, "Encrypted File SUN Diversified Keys Worker");
         Thread worker = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -283,30 +283,8 @@ public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity imple
                                 writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_RW  + ", aborted");
                                 return;
                             }
-/*
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "AES Authentication SUCCESS");
-                            } else {
-                                writeToUiAppend(output, "AES Authentication FAILURE");
-                                writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                                //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                                if (success) {
-                                    writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                    isLrpAuthenticationMode = true;
-                                } else {
-                                    writeToUiAppend(output, "LRP Authentication FAILURE");
-                                    writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                    return;
-                                }
-                            }
- */
                         }
                     }
-
 
                     // write URL template to file 02 depending on radio button
                     SDMSettings sdmSettings = new SDMSettings();
@@ -339,7 +317,6 @@ public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity imple
                         return;
                     }
                     writeToUiAppend(output, "File 02h Writing the NDEF URL Template SUCCESS");
-                    //System.out.println("*** NdefRecord: " + new String(ndefRecord, StandardCharsets.UTF_8));
                     // write the timestamp data (19 characters long + 5 characters '#1234'
                     byte[] fileData = (getTimestampLog() + "#1234").getBytes(StandardCharsets.UTF_8);
                     try {
@@ -367,26 +344,6 @@ public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity imple
                             writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
                             return;
                         }
-                        /*
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
-                        } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
-                        }
-                         */
                     }
 
                     // change the auth key settings
@@ -440,7 +397,7 @@ public class EncryptedFileSunDerivedKeysActivity extends AppCompatActivity imple
         mReturnHome.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(EncryptedFileSunDerivedKeysActivity.this, MainActivity.class);
+                Intent intent = new Intent(EncryptedFileSunDiversifiedKeysActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return false;

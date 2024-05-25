@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="7 Plaintext Read Counter Limit SUN Feature"
+                android:text="Plaintext Read Counter Limit SUN Feature"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -47,6 +47,7 @@
                 android:id="@+id/tvMenu1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:padding="16dp"
                 android:text="Write the URL template for Plaintext SUN"
                 android:textAlignment="center"
@@ -58,19 +59,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Write the URL template for a Plaintext SUN Message to file 2 on the tag. A Read Counter Limit of '3' is setup to prevent more tag readings."
                 android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="normal" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvMenu2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Select the Fields"
+                android:text="Select the Output Fields"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />

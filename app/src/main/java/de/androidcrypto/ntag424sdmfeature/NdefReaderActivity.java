@@ -3,7 +3,9 @@ package de.androidcrypto.ntag424sdmfeature;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sdmfeature.Constants.DOUBLE_DIVIDER;
+import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.SINGLE_DIVIDER;
+import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Utils.printData;
 
 import android.content.Context;
@@ -31,6 +33,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import net.bplearning.ntag424.card.KeyInfo;
 import net.bplearning.ntag424.sdm.PiccData;
 
 import java.io.IOException;
@@ -41,7 +44,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
 
     private static final String TAG = NdefReaderActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
-    private RadioButton rbUseDefaultKeys, rbUseCustomKeys;
+    private RadioButton rbUseDefaultKeys, rbUseCustomKeys, rbUseDiversifiedKeys;
     private NfcAdapter mNfcAdapter;
     private Ndef ndef;
     private NdefMessage ndefMessage;
@@ -65,6 +68,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
         output = findViewById(R.id.etOutput);
         rbUseDefaultKeys = findViewById(R.id.rbUseDefaultKeys);
         rbUseCustomKeys = findViewById(R.id.rbUseCustomKeys);
+        rbUseDiversifiedKeys = findViewById(R.id.rbUseDiversifiedKeys);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
@@ -106,6 +110,10 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
     @Override
     public void onTagDiscovered(Tag tag) {
 
+        runOnUiThread(() -> {
+            output.setText("");
+        });
+
         writeToUiAppend(output, "NFC tag discovered");
 
         // here we are using the NDEF technology to work with a NDEF message directly
@@ -133,6 +141,8 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 Log.d(TAG, "tag id: " + Utils.bytesToHex(tagIdByte));
                 writeToUiAppend(output, "NFC tag connected");
                 runWorker();
+            } else {
+                writeToUiAppend(output, "The tag does not have a NDEF message");
             }
 
         } catch (IOException e) {
@@ -234,9 +244,15 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
 
                     // We need a key for Encrypted File Data (if used in the NDEF message) - this was used during SUN setup as well:
                      encryptedFileDataKey = new byte[16]; // here we are using the default AES-128 key
-                } else {
+                } else if (rbUseCustomKeys.isChecked()) {
                     cmacKey = APPLICATION_KEY_4.clone();
                     encryptedFileDataKey = APPLICATION_KEY_3.clone();
+                } else {
+                    // using a diversified key
+                    // for this we need to decrypt the (encrypted) PICC data first, retrieve
+                    // the real Tag UID, diversify the key number 4 from the Master Application Key
+                    cmacKey = null;
+                    encryptedFileDataKey = APPLICATION_KEY_3.clone(); // this key is NOT diversified, just the CUSTOM key
                 }
 
                 // now we are trying to parse the content of the message
@@ -270,7 +286,6 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 // *** AES: fullPayload: tag?picc_data=9BDAB6EC1F5E6FE0DAAA4FB6FAF4BBDC&cmac=6AEB1D3483BCA7EE
                 // *** LRP: fullPayload: tag?picc_data=705BC0158C66B38CC8ECE99847698915D1AD0280FBB8BE51&cmac=1A2DB44BBBCD95B0
                 // PICC length AES: 32 chars = 16 bytes, LRP: 48 chars = 24 bytes
-
 
                 // data for Encrypted PICC with File data
                 // *** AES :fullPayload: tag?picc_data=34A4571ACF9F4B463AC557E34CEE739A&enc=3CEE32C3D9009A307A90EEAFADA8EEAA3A6BEB94F0A6371276F6B818728DF56B&cmac=F7E67C721D044911
@@ -401,12 +416,29 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         writeToUiAppend(output, "Could not find PICC data, aborted");
                         return;
                     }
-                    System.out.println(Utils.printData("encryptedPiccDataBytes", encryptedPiccDataBytes) + " isLrp: " + isLrpAuthentication);
+                    //System.out.println(Utils.printData("encryptedPiccDataBytes", encryptedPiccDataBytes) + " isLrp: " + isLrpAuthentication);
                     piccData = PiccData.decodeFromEncryptedBytes(encryptedPiccDataBytes, encryptedFileDataKey, isLrpAuthentication);
                     byte[] uidDecrypted = piccData.getUid();
                     int readCounterDecrypted = piccData.getReadCounter();
+
+                    // if the Application Key 4 was diversified we need to run the diversification again with the decrypted tag UID
+                    if (rbUseDiversifiedKeys.isChecked()) {
+                        if ((uidDecrypted == null) || (uidDecrypted.length != 7)) {
+                            writeToUiAppend(output, "Working with DIVERSIFIED keys");
+                            writeToUiAppend(output, "Could not decrypt the Tag UID, so I cannot diversify the key for validating CMAC data.");
+                            return;
+                        }
+                        // diversify the Master Application key with real Tag UID
+                        KeyInfo keyInfo = new KeyInfo();
+                        keyInfo.diversifyKeys = true;
+                        keyInfo.key = MASTER_APPLICATION_KEY_FOR_DIVERSIFYING.clone();
+                        keyInfo.systemIdentifier = SYSTEM_IDENTIFIER_FOR_DIVERSIFYING; // static value for this application
+                        cmacKey = keyInfo.generateKeyForCardUid(uidDecrypted);
+                        Log.d(TAG, Utils.printData("diversifiedKey", cmacKey));
+                    }
+
                     piccData.setMacFileKey(cmacKey);
-                    byte[] cmacCalc = piccData.performShortCMAC(null);// null if MAC on PICC-only data
+                    byte[] cmacCalc = piccData.performShortCMAC(null); // null if MAC on PICC-only data
                     byte[] cmacBytes;
                     if (isCmac) {
                         cmacBytes = Utils.hexStringToByteArray(cmac);
@@ -441,14 +473,9 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         // we do have encrypted file data as well
                         writeToUiAppend(output, "Encrypted File Data:\n" + encryptedFileData);
                         // at this point we know the UID and ReadCounter data from decrypted PICC data. Now we can decrypt the encrypted file data using the (personalized ?) fileKey
-
-                        //PiccData piccDataEnc = new PiccData(uidDecrypted, readCounterDecrypted, isLrpAuthentication);
-                        byte[] encryptedFileDataBytes = Utils.hexStringToByteArray(encryptedFileData);
-                        //piccDataEnc.setMacFileKey(encryptedFileDataKey);
-                        //byte[] decryptedFileData = piccDataEnc.decryptFileData(encryptedFileDataBytes);
+                         byte[] encryptedFileDataBytes = Utils.hexStringToByteArray(encryptedFileData);
                         byte[] decryptedFileData = piccData.decryptFileData(encryptedFileDataBytes);
                         writeToUiAppend(output, "Decrypted File data:\n" + new String(decryptedFileData, StandardCharsets.UTF_8));
-
                         // validate the CMAC over all elements
                         // The CMAC is calculated over the encrypted file data STRING (upper case hex characters) and the
                         // following '&cmac=' string. After concatenating both the string is converted to a byte[]

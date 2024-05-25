@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="6 NDEF Reader (Backend Server)"
+                android:text="NDEF Reader (Backend Server)"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -47,6 +47,7 @@
                 android:id="@+id/tvMenu1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:padding="16dp"
                 android:text="Read a NDEF Message from the tag"
                 android:textAlignment="center"
@@ -58,19 +59,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="Reading a NDEF message from the tag, decrypts encrypted tag and file data and validates the CMAC (acting like a backend server)"
                 android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="normal" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvMenu2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Select the Keys for decryption"
+                android:text="Select the Key Type for decryption"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -98,6 +99,13 @@
                     android:layout_height="40dp"
                     android:checked="false"
                     android:text="use CUSTOM keys for encrypted data" />
+
+                <RadioButton
+                    android:id="@+id/rbUseDiversifiedKeys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:checked="false"
+                    android:text="use DIVERSIFIED keys for encrypted data" />
 
             </RadioGroup>
 

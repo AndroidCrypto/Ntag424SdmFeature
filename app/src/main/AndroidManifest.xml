@@ -34,7 +34,7 @@
             android:name=".EncryptedFileSunCustomKeysActivity"
             android:exported="false" />
         <activity
-            android:name=".EncryptedFileSunDerivedKeysActivity"
+            android:name=".EncryptedFileSunDiversifiedKeysActivity"
             android:exported="false" />
         <activity
             android:name=".UnsetActivity"

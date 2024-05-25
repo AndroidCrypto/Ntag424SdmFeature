@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "menu10EncryptedFileSunDerivedKeys");
-                Intent intent = new Intent(MainActivity.this, EncryptedFileSunDerivedKeysActivity.class);
+                Intent intent = new Intent(MainActivity.this, EncryptedFileSunDiversifiedKeysActivity.class);
                 startActivity(intent);
             }
         });

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".EncryptedFileSunDerivedKeysActivity">
+    tools:context=".EncryptedFileSunDiversifiedKeysActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="10 Encrypted File SUN Feature with Derived Keys"
+                android:text="Encrypted File SUN Feature with DIVERSIFIED Keys"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -47,8 +47,9 @@
                 android:id="@+id/tvMenu1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:padding="16dp"
-                android:text="Write the URL template for Encrypted File SUN using DERIVED keys"
+                android:text="Write the URL template for Encrypted File SUN using DIVERSIFIED keys"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -58,19 +59,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. The file data is a timestamp and 5 additional characters. This is using DERIVED key for CMAC and File Data."
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. The file data is a timestamp and 5 additional characters. This is using a DIVERSIFIED key for CMAC and File Data."
                 android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="normal" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvMenu2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Select the Fields"
+                android:text="Select the Output Fields"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -92,7 +93,7 @@
                     android:checked="false"
                     android:enabled="false"
                     android:visibility="gone"
-                    android:text="(PICC with UID only) + File data + CMAC (endpoint is not working)" />
+                    android:text="(PICC with UID only) + File data + CMAC (endpoint is not working, use NDEF Reader instead)" />
 
                 <RadioButton
                     android:id="@+id/rbFieldCounter"
@@ -101,14 +102,14 @@
                     android:checked="false"
                     android:enabled="false"
                     android:visibility="gone"
-                    android:text="(PICC with Counter only) + File data + CMAC (endpoint is not working)" />
+                    android:text="(PICC with Counter only) + File data + CMAC (endpoint is not working, use NDEF Reader instead)" />
 
                 <RadioButton
                     android:id="@+id/rbFieldUidCounter"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="60dp"
                     android:checked="true"
-                    android:text="(PICC with UID + Counter) + File data + CMAC (ENDPOINT Is NOT WORKING, use NDEF Reader instead)" />
+                    android:text="(PICC with UID + Counter) + File data + CMAC (endpoit is NOT working, use NDEF Reader instead)" />
 
             </RadioGroup>
 

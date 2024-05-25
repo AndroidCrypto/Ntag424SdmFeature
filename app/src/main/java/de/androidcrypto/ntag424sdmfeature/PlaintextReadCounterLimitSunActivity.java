@@ -41,6 +41,7 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
@@ -215,19 +216,28 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
 
                     // authentication
                     boolean isLrpAuthenticationMode = false;
+
                     success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     if (success) {
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
-                        writeToUiAppend(output, "AES Authentication FAILURE");
-                        writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                        success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "LRP Authentication SUCCESS");
-                            isLrpAuthenticationMode = true;
+                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
+                        if (Arrays.equals(dnaC.returnCode, Constants.PERMISSION_DENIED_ERROR)) {
+                            // try to run the LRP authentication
+                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                            if (success) {
+                                writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                isLrpAuthenticationMode = true;
+                            } else {
+                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
+                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                return;
+                            }
                         } else {
-                            writeToUiAppend(output, "LRP Authentication FAILURE");
-                            writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                            // any other error, print the error code and return
+                            writeToUiAppend(output, "AES Authentication FAILURE");
+                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.returnCode));
                             return;
                         }
                     }
@@ -255,24 +265,15 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                         // do nothing, skip authentication
                     } else {
                         if (ACCESS_KEY_RW != ACCESS_KEY0) {
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                            //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "AES Authentication SUCCESS");
+                            // silent authentication
+                            if (!isLrpAuthenticationMode) {
+                                success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
                             } else {
-                                writeToUiAppend(output, "AES Authentication FAILURE");
-                                writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                                //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                                 success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_RW, Ntag424.FACTORY_KEY);
-                                if (success) {
-                                    writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                    isLrpAuthenticationMode = true;
-                                } else {
-                                    writeToUiAppend(output, "LRP Authentication FAILURE");
-                                    writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                    return;
-                                }
+                            }
+                            if (!success) {
+                                writeToUiAppend(output, "Error on Authentication with ACCESS KEY RW, aborted");
+                                return;
                             }
                         }
                     }
@@ -309,23 +310,15 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
 
                     // check if we authenticated with the right key - here we need the CAR key
                     if (ACCESS_KEY_CAR != ACCESS_KEY_RW) {
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
+                        // silent authentication
+                        if (!isLrpAuthenticationMode) {
+                            success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
                         } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
+                        }
+                        if (!success) {
+                            writeToUiAppend(output, "Error on Authentication with ACCESS KEY CAR, aborted");
+                            return;
                         }
                     }
 

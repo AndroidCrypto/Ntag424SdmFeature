@@ -230,7 +230,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:backgroundTint="@color/application_color_light_background_green"
+                android:backgroundTint="@color/application_color_light_background_dark_orange"
                 android:text="NDEF Reader (acting like a backend server)" />
 
             <com.google.android.material.divider.MaterialDivider
@@ -323,7 +323,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Setup Encrypted File SUN Message with Derived Keys"
+                android:text="Setup Encrypted File SUN Message with Diversified Keys"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -335,7 +335,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. This is using DERIVED keys."
+                android:text="Write the URL template for an Encrypted File SUN Message to file 2 on the tag. This is using DIVERSIFIED keys."
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="normal" />
@@ -348,7 +348,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/application_color_light_background_green"
-                android:text="Setup Encrypted File SUN Message with Derived Keys" />
+                android:text="Setup Encrypted File SUN Message with Diversified Keys" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
