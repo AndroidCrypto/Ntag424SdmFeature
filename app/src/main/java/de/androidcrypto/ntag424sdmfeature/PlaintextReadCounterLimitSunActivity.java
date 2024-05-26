@@ -1,5 +1,6 @@
 package de.androidcrypto.ntag424sdmfeature;
 
+import static net.bplearning.ntag424.CommandResult.PERMISSION_DENIED;
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
@@ -222,7 +223,7 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
                         // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.getLastCommandResult().data, Constants.PERMISSION_DENIED_ERROR)) {
+                        if (dnaC.getLastCommandResult().status2 == PERMISSION_DENIED) {
                             // try to run the LRP authentication
                             success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             if (success) {
@@ -230,14 +231,14 @@ public class PlaintextReadCounterLimitSunActivity extends AppCompatActivity impl
                                 isLrpAuthenticationMode = true;
                             } else {
                                 writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
+                                writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
                                 writeToUiAppend(output, "Authentication not possible, Operation aborted");
                                 return;
                             }
                         } else {
                             // any other error, print the error code and return
                             writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
+                            writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
                             return;
                         }
                     }

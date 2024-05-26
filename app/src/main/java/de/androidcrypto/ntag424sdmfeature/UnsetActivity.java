@@ -1,5 +1,6 @@
 package de.androidcrypto.ntag424sdmfeature;
 
+import static net.bplearning.ntag424.CommandResult.PERMISSION_DENIED;
 import static net.bplearning.ntag424.constants.Ntag424.CC_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Ntag424.NDEF_FILE_NUMBER;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_EVERYONE;
@@ -14,6 +15,7 @@ import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_DEFAU
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_DEFAULT;
 import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT;
+import static de.androidcrypto.ntag424sdmfeature.Constants.PERMISSION_DENIED_ERROR;
 import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DIVERSIFYING;
 
 import android.content.Context;
@@ -225,7 +227,7 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                         writeToUiAppend(output, "AES Authentication SUCCESS");
                     } else {
                         // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (Arrays.equals(dnaC.getLastCommandResult().data, Constants.PERMISSION_DENIED_ERROR)) {
+                        if (dnaC.getLastCommandResult().status2 == PERMISSION_DENIED) {
                             // try to run the LRP authentication
                             success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                             if (success) {
@@ -233,14 +235,14 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                                 isLrpAuthenticationMode = true;
                             } else {
                                 writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
+                                writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
                                 writeToUiAppend(output, "Authentication not possible, Operation aborted");
                                 return;
                             }
                         } else {
                             // any other error, print the error code and return
                             writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
+                            writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
                             return;
                         }
                     }
@@ -389,7 +391,7 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                             Log.d(TAG, Utils.printData("real Tag UID", realTagUid));
                         } catch (ProtocolException e) {
                             writeToUiAppend(output, "Could not read the real Tag UID, aborted");
-                            writeToUiAppend(output, Utils.printData("returnCode is", dnaC.getLastCommandResult().data));
+                            writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
                             return;
                         }
                         // derive the Master Application key with real Tag UID
@@ -397,11 +399,11 @@ public class UnsetActivity extends AppCompatActivity implements NfcAdapter.Reade
                         keyInfo.diversifyKeys = true;
                         keyInfo.key = MASTER_APPLICATION_KEY_FOR_DIVERSIFYING.clone();
                         keyInfo.systemIdentifier = SYSTEM_IDENTIFIER_FOR_DIVERSIFYING; // static value for this application
-                        byte[] derivedKey = keyInfo.generateKeyForCardUid(realTagUid);
-                        Log.d(TAG, Utils.printData("derivedKey", derivedKey));
+                        byte[] diversifiedKey = keyInfo.generateKeyForCardUid(realTagUid);
+                        Log.d(TAG, Utils.printData("diversifiedKey", diversifiedKey));
                         success = false;
                         try {
-                            ChangeKey.run(dnaC, ACCESS_KEY4, derivedKey, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_DEFAULT);
+                            ChangeKey.run(dnaC, ACCESS_KEY4, diversifiedKey, APPLICATION_KEY_DEFAULT, APPLICATION_KEY_VERSION_DEFAULT);
                             success = true;
                         } catch (IOException e) {
                             Log.e(TAG, "ChangeKey 4 IOException: " + e.getMessage());

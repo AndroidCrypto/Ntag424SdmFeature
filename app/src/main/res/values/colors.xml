@@ -10,5 +10,6 @@
     <color name="application_color_light_background_orange">#FFB74D</color>
     <color name="application_color_light_background_dark_orange">#FB7013</color>
     <color name="application_color_light_background_green">#81C784</color>
+    <color name="application_color_light_background_mint">#4DD0E1</color>
     <color name="application_color_background_red">#FF0000</color>
 </resources>
