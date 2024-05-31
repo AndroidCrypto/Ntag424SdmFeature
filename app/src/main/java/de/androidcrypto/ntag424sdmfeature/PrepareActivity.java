@@ -353,7 +353,8 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         writeToUiAppend(output, "Change Application Key 4 FAILURE, Operation aborted");
                         return;
                     }
-
+                    // todo: change file settings for files 01 and 02 for Read Access from "free access" to key 0
+                    // todo: undo the change in "Unset.."
                 } catch (IOException e) {
                     Log.e(TAG, "Exception: " + e.getMessage());
                     writeToUiAppend(output, "Exception: " + e.getMessage());

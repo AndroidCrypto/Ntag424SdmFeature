@@ -309,7 +309,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                     } else {
                         sdmSettings.sdmOptionUid = true;
                         sdmSettings.sdmOptionReadCounter = true;
-                    }
+                    }                   // EBB1044D5E036BD71681F3CE82BA9D8452D82DED14424A0EDFB25FC1425B98D9
                     ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
