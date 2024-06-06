@@ -1,0 +1,310 @@
+** TagInfo Scan (version 5.0.0) 06-Juni-24 16:47:13 **
+Report Type: -- IC INFO ------------------------------
+
+# IC Manufacturer:
+NXP Semiconductors
+
+# IC Type:
+NTAG 424 DNA
+
+# NFC Forum NDEF-compliant tag:
+Type 4 Tag
+
+-- NDEF ------------------------------
+
+# NFC data set information:
+NDEF message containing 1 record
+Current message size: 91 bytes
+Maximum message size: 254 bytes
+NFC data set access: Read-Only
+
+# Record #1: URI record:
+Type Name Format: NFC Forum well-known type (1)
+Short Record
+type: "U"
+protocol field: [none] (0x00)
+URI field: https://sdm.nfcdeveloper.com/tagpt?uid=049F50824F1390&ctr=000001&cmac=2446E527C37E073A
+Payload length: 87 bytes
+Payload data:
+
+[00] 00 68 74 74 70 73 3A 2F 2F 73 64 6D 2E 6E 66 63 |␀https://sdm.nfc|
+
+[10] 64 65 76 65 6C 6F 70 65 72 2E 63 6F 6D 2F 74 61 |developer.com/ta|
+
+[20] 67 70 74 3F 75 69 64 3D 30 34 39 46 35 30 38 32 |gpt?uid=049F5082|
+
+[30] 34 46 31 33 39 30 26 63 74 72 3D 30 30 30 30 30 |4F1390&ctr=00000|
+
+[40] 31 26 63 6D 61 63 3D 32 34 34 36 45 35 32 37 43 |1&cmac=2446E527C|
+
+[50] 33 37 45 30 37 33 41                            |37E073A         |
+
+
+# NDEF message:
+[00] D1 01 57 55 00 68 74 74 70 73 3A 2F 2F 73 64 6D |.␁WU␀https://sdm|
+
+[10] 2E 6E 66 63 64 65 76 65 6C 6F 70 65 72 2E 63 6F |.nfcdeveloper.co|
+
+[20] 6D 2F 74 61 67 70 74 3F 75 69 64 3D 30 34 39 46 |m/tagpt?uid=049F|
+
+[30] 35 30 38 32 34 46 31 33 39 30 26 63 74 72 3D 30 |50824F1390&ctr=0|
+
+[40] 30 30 30 30 31 26 63 6D 61 63 3D 32 34 34 36 45 |00001&cmac=2446E|
+
+[50] 35 32 37 43 33 37 45 30 37 33 41                |527C37E073A     |
+
+
+# Capability Container (CC) file content:
+Mapping version 2.0
+CC length: 15 bytes
+Maximum Le value: 58 bytes (0x3A)
+Maximum Lc value: 52 bytes (0x34)
+NDEF File Control TLV:
+* Length: 6 bytes
+* NDEF file ID: 0xE104
+* Maximum NDEF data size: 256 bytes (0x100)
+* NDEF access: Read-Only (0x00FF)
+[00] 00 0F 20 00 3A 00 34 04 06 E1 04 01 00 00 FF 05 |␀␏␠␀:␀4␄␆.␄␁␀␀.␅|
+
+[10] 06 E1 05 00 80 82 83 00 00 00 00 00 00 00 00 00 |␆.␅␀...␀␀␀␀␀␀␀␀␀|
+
+
+# Type 4 Tag File Control Information (FCI):
+Type 4 Tag v2 application FCI: [none]
+CC file FCI: [none]
+NDEF file FCI: [none]
+
+# NDEF file contents:
+[000] 00 5B D1 01 57 55 00 68 74 74 70 73 3A 2F 2F 73 |␀[.␁WU␀https://s|
+
+[010] 64 6D 2E 6E 66 63 64 65 76 65 6C 6F 70 65 72 2E |dm.nfcdeveloper.|
+
+[020] 63 6F 6D 2F 74 61 67 70 74 3F 75 69 64 3D 30 34 |com/tagpt?uid=04|
+
+[030] 39 46 35 30 38 32 34 46 31 33 39 30 26 63 74 72 |9F50824F1390&ctr|
+
+[040] 3D 30 30 30 30 30 32 26 63 6D 61 63 3D 36 41 45 |=000002&cmac=6AE|
+
+[050] 42 31 44 33 34 38 33 42 43 41 37 45 45 00 00 00 |B1D3483BCA7EE␀␀␀|
+
+[060] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[070] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[080] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[090] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0A0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0B0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0C0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0D0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0E0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0F0] 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+
+-- EXTRA ------------------------------
+
+# Memory Information:
+448 bytes total memory
+* 416 bytes user memory
+
+# IC Information:
+Capacitance: 50 pF
+
+# ISO-FID : ISO DF-Name:
+E110 : D2760000850101
+* Contains ISO FIDs: E103, E104, EF05
+
+# Version information:
+Vendor ID: NXP Semiconductors (0x04)
+Type: NTAG (0x04)
+Subtype: 50 pF (0x02)
+Major version: 0x30 (0x30)
+Minor version: 0x00 (0x00)
+Storage size: 416 bytes (0x11)
+Protocol: ISO/IEC 14443-4 (0x05)
+
+# Configuration Information:
+Secure Dynamic Messaging: Enabled
+UID Mirroring: Enabled
+SDM Read Counter: Enabled
+SDM Read Counter Limit: Enabled
+SDM Read Counter Limit Value: 0x030000
+Encrypted File Data Mirroring: Disabled
+
+# Originality Check (asymmetric):
+Signature verified with NXP public key
+
+# Originality Check (symmetric):
+Originality Check successful, IC produced by NXP
+
+# TagInfo Version:
+Version :5.0.0
+
+# Device Info:
+Device Model :samsung ( SM-A515F )
+Android OS Version :13
+
+-- FULL SCAN ------------------------------
+
+# Technologies Supported:
+Fully compliant to the ISO/IEC 14443, all parts 1 to 4
+Fully compliant to the ISO/IEC 7816-4 file selection 
+ and APDU handling
+Fully compliant passive target compliant to 
+ ISO/IEC18092
+
+# Android Technology Information:
+Tag description:
+* TAG: Tech [android.nfc.tech.IsoDep, android.nfc.tech.NfcA, android.nfc.tech.Ndef]
+* Maximum transceive length: 65279 bytes
+* Default maximum transceive time-out: 618 ms
+* Extended length APDUs supported
+* Maximum transceive length: 253 bytes
+* Default maximum transceive time-out: 618 ms
+MIFARE Classic support present in Android
+
+# Detailed Protocol Information:
+ID: 04:9F:50:82:4F:13:90
+ATQA: 0x4403
+SAK: 0x20
+ATS: 0x067777710280
+* Max. accepted frame size: 128 bytes (FSCI: 7)
+* Supported receive rates:
+	- 106, 212, 424, 848 kbit/s (DR: 1, 2, 4, 8)
+* Supported send rates:
+	- 106, 212, 424, 848 kbit/s (DS: 1, 2, 4, 8)
+* Different send and receive rates supported
+* SFGT: 604.1 us  (SFGI: 1)
+* FWT: 38.66 ms  (FWI: 7)
+* NAD not supported
+* CID supported
+* Historical bytes: 0x80 |.|
+
+# Memory Content:
+PICC configuration:
+* PICC authentication not supported
+* Key configuration:
+  - 4 immutable AES 128 bit originality keys
+
+
+
+
+Application configuration (DF 0xD2760000850101):
+* Default AppMasterKey
+* Key configuration:
+  - 5 mutable AES 128 bit AppKeys
+
+
+
+
+Settings for file 01:
+* FileType: StandardData file
+* Secure Dynamic Messaging: disabled
+* Communication mode: plain
+
+* Permissions:
+	- ReadWrite: with key 0x0
+	- Change: with key 0x0
+	- Read: free access
+	- Write: with key 0x0
+
+* File size: 32 bytes
+
+
+
+[00] 00 0F 20 00 3A 00 34 04 06 E1 04 01 00 00 FF 05 |␀␏␠␀:␀4␄␆.␄␁␀␀.␅|
+
+[10] 06 E1 05 00 80 82 83 00 00 00 00 00 00 00 00 00 |␆.␅␀...␀␀␀␀␀␀␀␀␀|
+
+
+
+
+Settings for file 02:
+* FileType: StandardData file
+* Secure Dynamic Messaging: enabled
+* Communication mode: plain
+
+* Permissions:
+	- ReadWrite: with key 0x2
+	- Change: with key 0x0
+	- Read: free access
+	- Write: with key 0x2
+
+* File size: 256 bytes
+
+* SDM mirror options: 
+	- UID mirror enabled
+	- SDMReadCtr enabled
+	- SDMReadCtrLimit enabled
+	- ASCII encoding
+
+* SDM Access rights:
+	- SDMCtrRet permissions: no access
+	- Meta Read: Plain PICCData mirror
+	- File Read: with key 0x2
+* UID Mirror offset: 0x2E0000
+* SDMReadCtr mirror offset: 0x410000
+* SDM MAC input offset: 0x4D0000
+* SDM MAC mirror offset: 0x4D0000
+* SDMReadCtr limit: 0x030000
+
+[000]    00 5B D1 01 57 55 00 68 74 74 70 73 3A 2F 2F 73 |␀[.␁WU␀https://s|
+
+[010]    64 6D 2E 6E 66 63 64 65 76 65 6C 6F 70 65 72 2E |dm.nfcdeveloper.|
+
+[020]    63 6F 6D 2F 74 61 67 70 74 3F 75 69 64 3D 2A 2A |com/tagpt?uid=**|
+
+[030]    2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 26 63 74 72 |************&ctr|
+
+[040]    3D 2A 2A 2A 2A 2A 2A 26 63 6D 61 63 3D 2A 2A 2A |=******&cmac=***|
+
+[050]    2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 2A 00 00 00 |*************␀␀␀|
+
+[060]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[070]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[080]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[090]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0A0]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0B0]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0C0]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0D0]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0E0]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+[0F0]    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀␀|
+
+
+
+
+Settings for file 03:
+* FileType: StandardData file
+* Secure Dynamic Messaging: disabled
+* Communication mode: MAC authenticated
+
+* Permissions:
+	- ReadWrite: with key 0x3
+	- Change: with key 0x0
+	- Read: with key 0x2
+	- Write: with key 0x3
+
+* File size: 128 bytes
+
+
+
+
+--------------------------------------
+
