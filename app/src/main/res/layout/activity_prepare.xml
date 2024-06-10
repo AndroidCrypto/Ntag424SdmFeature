@@ -94,7 +94,7 @@
                     android:text="Use a STATIC Key 4 (used for Encrypted File data and CMAC) (endpoint is not working, use NDEF Reader instead)" />
 
                 <RadioButton
-                    android:id="@+id/rbKey4Derived"
+                    android:id="@+id/rbKey4Diversified"
                     android:layout_width="wrap_content"
                     android:layout_height="70dp"
                     android:checked="false"

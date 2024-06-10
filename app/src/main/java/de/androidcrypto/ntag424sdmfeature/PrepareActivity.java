@@ -54,12 +54,11 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class PrepareActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
     private static final String TAG = PrepareActivity.class.getSimpleName();
-    private RadioButton rbKey4Static, rbKey4Derived;
+    private RadioButton rbKey4Static, rbKey4Diversified;
     private com.google.android.material.textfield.TextInputEditText output;
 
     private DnaCommunicator dnaC = new DnaCommunicator();
@@ -82,7 +81,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
         setSupportActionBar(myToolbar);
 
         rbKey4Static = findViewById(R.id.rbKey4Static);
-        rbKey4Derived = findViewById(R.id.rbKey4Derived);
+        rbKey4Diversified = findViewById(R.id.rbKey4Diversified);
         output = findViewById(R.id.etOutput);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -311,10 +310,10 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                     }
 
                     // change application key 4
-                    // the key source depends on the radio button, either use a static Key 4 or a derived Key 4 (tag UID)
+                    // the key source depends on the radio button, either use a static Key 4 or a diversified Key 4 (tag UID)
 
                     byte[] newKey4 = null;
-                    if (rbKey4Derived.isChecked()) {
+                    if (rbKey4Diversified.isChecked()) {
                         // get the real card UID
                         byte[] realTagUid = null;
                         try {
@@ -325,7 +324,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                             writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
                             return;
                         }
-                        // derive the Master Application key with real Tag UID
+                        // diversify the Master Application key with real Tag UID
                         KeyInfo keyInfo = new KeyInfo();
                         keyInfo.diversifyKeys = true;
                         keyInfo.key = MASTER_APPLICATION_KEY_FOR_DIVERSIFYING.clone();
@@ -344,7 +343,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         Log.e(TAG, "ChangeKey 4 IOException: " + e.getMessage());
                     }
                     if (success) {
-                        if (rbKey4Derived.isChecked()) {
+                        if (rbKey4Diversified.isChecked()) {
                             writeToUiAppend(output, "Change Application Key 4 to DIVERSIFIED key SUCCESS");
                         } else {
                             writeToUiAppend(output, "Change Application Key 4 to CUSTOM key SUCCESS");

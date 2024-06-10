@@ -473,7 +473,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                         // we do have encrypted file data as well
                         writeToUiAppend(output, "Encrypted File Data:\n" + encryptedFileData);
                         // at this point we know the UID and ReadCounter data from decrypted PICC data. Now we can decrypt the encrypted file data using the (personalized ?) fileKey
-                         byte[] encryptedFileDataBytes = Utils.hexStringToByteArray(encryptedFileData);
+                        byte[] encryptedFileDataBytes = Utils.hexStringToByteArray(encryptedFileData);
                         byte[] decryptedFileData = piccData.decryptFileData(encryptedFileDataBytes);
                         writeToUiAppend(output, "Decrypted File data:\n" + new String(decryptedFileData, StandardCharsets.UTF_8));
                         // validate the CMAC over all elements
