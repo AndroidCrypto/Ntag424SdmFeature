@@ -46,7 +46,6 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
     private static final String TAG = NdefReaderActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUseDefaultKeys, rbUseCustomKeys, rbUseDiversifiedKeys;
-    private CheckBox cbUseLrp;
     private NfcAdapter mNfcAdapter;
     private Ndef ndef;
     private NdefMessage ndefMessage;
@@ -71,7 +70,6 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
         rbUseDefaultKeys = findViewById(R.id.rbUseDefaultKeys);
         rbUseCustomKeys = findViewById(R.id.rbUseCustomKeys);
         rbUseDiversifiedKeys = findViewById(R.id.rbUseDiversifiedKeys);
-        cbUseLrp = findViewById(R.id.cbUseLrp);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
