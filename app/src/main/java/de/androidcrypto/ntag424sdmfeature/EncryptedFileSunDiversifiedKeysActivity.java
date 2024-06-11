@@ -342,7 +342,7 @@ public class EncryptedFileSunDiversifiedKeysActivity extends AppCompatActivity i
                     fileSettings02.sdmSettings = sdmSettings;
                     fileSettings02.readWritePerm = ACCESS_KEY2;
                     fileSettings02.changePerm = ACCESS_KEY0;
-                    fileSettings02.readPerm = ACCESS_EVERYONE;
+                    fileSettings02.readPerm = ACCESS_KEY2;
                     fileSettings02.writePerm = ACCESS_KEY2;
                     try {
                         ChangeFileSettings.run(dnaC, NDEF_FILE_NUMBER, fileSettings02);
