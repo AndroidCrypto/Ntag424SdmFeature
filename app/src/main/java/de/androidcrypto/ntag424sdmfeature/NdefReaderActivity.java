@@ -193,12 +193,14 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
             public void run() {
 
                 /**
-                 * These steps are running - assuming that all keys are 'default' keys filled with 16 00h values
-                 * 1) Authenticate with Application Key 00h in AES mode
-                 * 2) If the authentication in AES mode fails try to authenticate in LRP mode
-                 * 3) Write an URL template to file 02 with PICC (Uid and/or Counter) plus CMAC
-                 * 4) Get existing file settings for file 02
-                 * 5) Save the modified file settings back to the tag
+                 * These steps are running
+                 * 1) Wait that a tag is tapped to the reader and then reading the NDEF message
+                 * 2) Parse the payload fortagpt = Plaintext or tag = Encrypted PICC data
+                 * 3) if Plaintext data: validate the CMAC using keys depending on radio button default/custom/diversified
+                 * 4) if Encrypted PICC data: decrypt the PICC data and validate the CMAC depending on radio button (see 3)
+                 * 5)                         check for Encrypted File data and decrypt the data (see 3 for radio button)
+                 * The activity is using AES authentication first, if this fails the LRP scheme is used
+                 * If the authentication in AES mode fails try to authenticate in LRP mode
                  */
 
                 writeToUiAppend(output, DOUBLE_DIVIDER);
