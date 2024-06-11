@@ -157,7 +157,6 @@ public class EncryptedFileSunDiversifiedKeysActivity extends AppCompatActivity i
             writeToUiAppend(output, "ERROR: Exception " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -215,13 +214,6 @@ public class EncryptedFileSunDiversifiedKeysActivity extends AppCompatActivity i
                      * 4) Write an URL template to file 02 with PICC (Uid and/or Counter) plus CMAC
                      * 5) Get existing file settings for file 02
                      * 6) Save the modified file settings back to the tag, using the key derivation
-                     */
-
-                    /**
-                     * Note: the library version has an issue in retrieving the file settings:
-                     * it should work without previous authentication but actually needs an authentication with any key.
-                     * I'm using the AUTH_KEY0 for this task, get the file settings for file 2 and then run the
-                     * authentication again with the RW key.
                      */
 
                     // authentication

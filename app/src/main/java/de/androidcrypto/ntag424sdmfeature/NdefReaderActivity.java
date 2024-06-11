@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -45,6 +46,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
     private static final String TAG = NdefReaderActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
     private RadioButton rbUseDefaultKeys, rbUseCustomKeys, rbUseDiversifiedKeys;
+    private CheckBox cbUseLrp;
     private NfcAdapter mNfcAdapter;
     private Ndef ndef;
     private NdefMessage ndefMessage;
@@ -69,6 +71,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
         rbUseDefaultKeys = findViewById(R.id.rbUseDefaultKeys);
         rbUseCustomKeys = findViewById(R.id.rbUseCustomKeys);
         rbUseDiversifiedKeys = findViewById(R.id.rbUseDiversifiedKeys);
+        cbUseLrp = findViewById(R.id.cbUseLrp);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
@@ -230,8 +233,7 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 writeToUiAppend(output, SINGLE_DIVIDER);
 
                 // we need to know if the tag runs with AES or LRP authentication
-                // todo use a checkButton
-                boolean isLrpAuthentication = false; // todo this is STATIC
+                boolean isLrpAuthentication =false;
 
                 // key usage depends on radio button - use default or custom keys
                 byte[] cmacKey = null;
@@ -280,20 +282,6 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 }
 
                 // start parsing the payload
-                System.out.println("*** fullPayload: " + fullPayload);
-
-                // data for Encrypted PICC without File data
-                // *** AES: fullPayload: tag?picc_data=9BDAB6EC1F5E6FE0DAAA4FB6FAF4BBDC&cmac=6AEB1D3483BCA7EE
-                // *** LRP: fullPayload: tag?picc_data=705BC0158C66B38CC8ECE99847698915D1AD0280FBB8BE51&cmac=1A2DB44BBBCD95B0
-                // PICC length AES: 32 chars = 16 bytes, LRP: 48 chars = 24 bytes
-
-                // data for Encrypted PICC with File data
-                // *** AES :fullPayload: tag?picc_data=34A4571ACF9F4B463AC557E34CEE739A&enc=3CEE32C3D9009A307A90EEAFADA8EEAA3A6BEB94F0A6371276F6B818728DF56B&cmac=F7E67C721D044911
-                // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A375807883947BD810C5765712:276643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
-                // *** LRP: fullPayload: tag?picc_data=DA8F5E1CA976EE4260351438A375807883947BD810C5765712:276643DF37B69D5C3B0374FBABD9D987406516C41639E191E9F692672675EE91F6&cmac=F9977525733C4ED4
-                //                                                                                        &enc=
-                //
-                int fullPayloadLength = fullPayload.length();
                 String uid = "";
                 String counter = "";
                 String cmac = "";
@@ -355,7 +343,6 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 if (fullPayload.contains("enc=")) {
                     isFileData = true;
                     // the encrypted file data is 64 characters hex data in our example
-                    // setting length = 32: 3FF6D3C1B1E33F0B4E8AD272957DA63A890C80730EB5F37DD8642511824A720B 20.05.2024 11:31:05#1234********
                     startIndex = fullPayload.indexOf("enc=") + 4;
                     System.out.println("fullPayload:" + fullPayload+ "#");
                     //encryptedFileData = fullPayload.substring(startIndex, startIndex + 96);
@@ -493,7 +480,6 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 writeToUiAppend(output, "== FINISHED ==");
                 Utils.vibrateShort(getApplicationContext());
             }
-
         });
         worker.start();
     }

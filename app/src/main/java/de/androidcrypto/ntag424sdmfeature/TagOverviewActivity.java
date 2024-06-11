@@ -56,7 +56,6 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
 
     private static final String TAG = TagOverviewActivity.class.getSimpleName();
     private com.google.android.material.textfield.TextInputEditText output;
-    private RadioButton rbUid, rbCounter, rbUidCounter;
     private DnaCommunicator dnaC = new DnaCommunicator();
     private NfcAdapter mNfcAdapter;
     private IsoDep isoDep;
@@ -77,10 +76,6 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
         setSupportActionBar(myToolbar);
 
         output = findViewById(R.id.etOutput);
-        rbUid = findViewById(R.id.rbFieldUid);
-        rbCounter = findViewById(R.id.rbFieldCounter);
-        rbUidCounter = findViewById(R.id.rbFieldUidCounter);
-
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
 
@@ -216,13 +211,6 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                      * 3) Write an URL template to file 02 with Uid and/or Counter plus CMAC
                      * 4) Get existing file settings for file 02
                      * 5) Save the modified file settings back to the tag
-                     */
-
-                    /**
-                     * Note: the library version has an issue in retrieving the file settings:
-                     * it should work without previous authentication but actually needs an authentication with any key.
-                     * I'm using the AUTH_KEY0 for this task, get the file settings for file 2 and then run the
-                     * authentication again with the RW key.
                      */
 
                     writeToUiAppend(output, Constants.DOUBLE_DIVIDER);
@@ -517,8 +505,6 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                             // the requested key is different from the last auth key
                             // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
 
-                            // todo check for keyXState 1/2/3
-
                             if (!isLrpAuthenticationMode) {
                                 success = AESEncryptionMode.authenticateEV2(dnaC, file01RAccess, Ntag424.FACTORY_KEY);
                             } else {
@@ -544,8 +530,6 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                         if (file02RAccess != lastAuthKeyNumber) {
                             // the requested key is different from the last auth key
                             // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
-
-                            // todo check for keyXState 1/2/3
 
                             if (!isLrpAuthenticationMode) {
                                 success = AESEncryptionMode.authenticateEV2(dnaC, file02RAccess, Ntag424.FACTORY_KEY);
@@ -574,8 +558,6 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                         if (file03RAccess != lastAuthKeyNumber) {
                             // the requested key is different from the last auth key
                             // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
-
-                            // todo check for keyXState 1/2/3
 
                             if (!isLrpAuthenticationMode) {
                                 success = AESEncryptionMode.authenticateEV2(dnaC, file03RAccess, Ntag424.FACTORY_KEY);

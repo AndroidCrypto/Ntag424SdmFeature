@@ -208,13 +208,6 @@ public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapte
                      * 5) Save the modified file settings back to the tag
                      */
 
-                    /**
-                     * Note: the library version has an issue in retrieving the file settings:
-                     * it should work without previous authentication but actually needs an authentication with any key.
-                     * I'm using the AUTH_KEY0 for this task, get the file settings for file 2 and then run the
-                     * authentication again with the RW key.
-                     */
-
                     // authentication
                     boolean isLrpAuthenticationMode = false;
 

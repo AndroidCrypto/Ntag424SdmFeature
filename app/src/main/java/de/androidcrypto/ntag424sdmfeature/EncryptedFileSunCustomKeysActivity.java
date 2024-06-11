@@ -216,13 +216,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                      * 5) Save the modified file settings back to the tag
                      */
 
-                    /**
-                     * Note: the library version has an issue in retrieving the file settings:
-                     * it should work without previous authentication but actually needs an authentication with any key.
-                     * I'm using the AUTH_KEY0 for this task, get the file settings for file 2 and then run the
-                     * authentication again with the RW key.
-                     */
-
                     // authentication
                     boolean isLrpAuthenticationMode = false;
 
@@ -345,26 +338,6 @@ public class EncryptedFileSunCustomKeysActivity extends AppCompatActivity implem
                             writeToUiAppend(output, "Error on Authentication with key " + ACCESS_KEY_CAR  + ", aborted");
                             return;
                         }
-                        /*
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                        //success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY4, Ntag424.FACTORY_KEY);
-                        if (success) {
-                            writeToUiAppend(output, "AES Authentication SUCCESS");
-                        } else {
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "Trying to authenticate in LRP mode");
-                            //success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY_CAR, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
-                            } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
-                                return;
-                            }
-                        }
-                         */
                     }
 
                     // change the auth key settings

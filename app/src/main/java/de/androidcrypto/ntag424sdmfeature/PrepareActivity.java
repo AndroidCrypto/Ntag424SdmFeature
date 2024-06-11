@@ -216,7 +216,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                      * 2) If the authentication in AES mode fails try to authenticate in LRP mode
                      * 3) Write the modified Capability Container content to file 01 (Read Only Access to file 02 = NDEF file)
                      * 4) Write an URL template to file 02
-                     * 5) Change the application keys 3 and 4
+                     * 5) Change the application keys 3 and 4 to Custom or Diversified value
                      * 6) If rbKey4Derived.isChecked diversify key 4 depending on tag UID instead of a static key
                      */
 

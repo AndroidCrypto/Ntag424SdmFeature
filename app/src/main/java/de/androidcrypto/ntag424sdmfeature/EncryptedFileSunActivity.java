@@ -215,13 +215,6 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                      */
 
                     /**
-                     * Note: the library version has an issue in retrieving the file settings:
-                     * it should work without previous authentication but actually needs an authentication with any key.
-                     * I'm using the AUTH_KEY0 for this task, get the file settings for file 2 and then run the
-                     * authentication again with the RW key.
-                     */
-
-                    /**
                      * Enabling Secure Dynamic Messaging encryption (SDMOptions[Bit 4] set to 1b) is not allowed if
                      * not both SDMReadCtr and UID are mirrored (i.e. SDMOptions[Bit 7] and SDMOptions[Bit 6] must be set to 1b)
                      */
@@ -309,7 +302,7 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
                     } else {
                         sdmSettings.sdmOptionUid = true;
                         sdmSettings.sdmOptionReadCounter = true;
-                    }                   // EBB1044D5E036BD71681F3CE82BA9D8452D82DED14424A0EDFB25FC1425B98D9
+                    }
                     ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
