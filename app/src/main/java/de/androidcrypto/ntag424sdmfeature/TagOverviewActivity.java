@@ -10,7 +10,6 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY1;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
-
 import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DIVERSIFYING;
 
@@ -27,7 +26,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -50,7 +48,6 @@ import net.bplearning.ntag424.exception.ProtocolException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 

@@ -42,7 +42,6 @@ import net.bplearning.ntag424.sdm.NdefTemplateMaster;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class EncryptedSunActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 

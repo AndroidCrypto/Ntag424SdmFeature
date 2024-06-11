@@ -1,11 +1,17 @@
 # NTAG 424 DNA Secure Dynamic Messaging ("SDM") Feature
 
+This is the accompanying app to my articles **Demystify the Secure Dynamic Message with NTAG 424 DNA NFC tags (Android/Java) Parts 1 and 2**,
+available here:
+
+Part 1:
+
+Part 2:
+
 https://medium.com/@androidcrypto/demystify-the-secure-unique-number-feature-with-ntag-424-dna-nfc-tags-android-java-b947c482913c
 
+## Overview
 
-## Project Status: Unfinished
-
-The NTAG 424 DNA tag are using a feature that was available only with the Mifare DESFire EV3 tags.
+The NTAG 424 DNA tags are using a feature that was available only with the Mifare DESFire EV3 tags before.
 
 Here is an excerpt from the datasheet: 
 *Using AES-128 cryptography, the tag generates a unique NFC authentication message 
@@ -32,12 +38,12 @@ NTAG 424 DNA and NTAG 424 DNA TagTamper features and hints: https://www.nxp.com/
 
 Symmetric Key Diversification AN10922: https://www.nxp.com/docs/en/application-note/AN10922.pdf
 
-The tag has a predefined application and 3 predefined Standard Data files:
+The tag has a predefined application and 3 predefined **Standard Data** files:
 - **File 01h**: 32 bytes size, suitable for the "Capability Container" data (necessary for NDEF messages). The Communication mode is **Plain Communication**.
 - **File 02h**: 256 bytes size, suitable for long NDEF messages. The Communication mode is **Plain Communication**.
 - **File 03h**: 128 bytes size, suitable for protected data. The Communication mode is **Encrypted Communication**.
 
-The application is setup with **5 application keys** that are of AES-128 size (meaning 16 bytes). The default (fabric) keys are (in hex notation):
+The application is setup with **5 application keys** that are of AES-128 size (meaning 16 bytes long). The default (fabric) keys are (in hex notation):
 ```plaintext
 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ```
@@ -45,7 +51,8 @@ The application is setup with **5 application keys** that are of AES-128 size (m
 The tags are using the **AES authentication** on default (fabric), but the authentication scheme can get changed to **LRP authentication** - this is an 
 one-time-change that cannot get reversed.
 
-This app can work with both authentication modes, but does not have an option to change the mode from AES to LRP.
+This app can work with both authentication modes, but does not have an option to change the mode from AES to LRP (but the underlying library has a function
+for this).
 
 ### Default content of file 1 (Capability Container)
 

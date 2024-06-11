@@ -8,14 +8,12 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY0;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_NONE;
-
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_DEFAULT;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_VERSION_DEFAULT;
 import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT;
-import static de.androidcrypto.ntag424sdmfeature.Constants.PERMISSION_DENIED_ERROR;
 import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DIVERSIFYING;
 
 import android.content.Context;
@@ -55,7 +53,6 @@ import net.bplearning.ntag424.exception.ProtocolException;
 import net.bplearning.ntag424.sdm.SDMSettings;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class UnsetActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
