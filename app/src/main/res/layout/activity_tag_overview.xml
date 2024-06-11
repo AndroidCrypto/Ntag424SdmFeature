@@ -66,16 +66,6 @@
                 android:textStyle="normal" />
 
             <TextView
-                android:id="@+id/tvMenu2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="Select the Fields"
-                android:textAlignment="center"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/tvInformation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

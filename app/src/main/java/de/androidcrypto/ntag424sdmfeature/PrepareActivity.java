@@ -43,8 +43,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import net.bplearning.ntag424.DnaCommunicator;
 import net.bplearning.ntag424.card.KeyInfo;
+import net.bplearning.ntag424.command.ChangeFileSettings;
 import net.bplearning.ntag424.command.ChangeKey;
+import net.bplearning.ntag424.command.FileSettings;
 import net.bplearning.ntag424.command.GetCardUid;
+import net.bplearning.ntag424.command.GetFileSettings;
 import net.bplearning.ntag424.command.WriteData;
 import net.bplearning.ntag424.constants.Ntag424;
 import net.bplearning.ntag424.encryptionmode.AESEncryptionMode;
@@ -258,6 +261,31 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                         return;
                     }
                     writeToUiAppend(output, "File 01h Writing the Capability Container SUCCESS");
+
+                    // change file settings: Read Access Key to 0
+                    // get the file settings
+                    FileSettings fileSettings01 = null;
+                    try {
+                        fileSettings01 = GetFileSettings.run(dnaC, CC_FILE_NUMBER);
+                    } catch (Exception e) {
+                        Log.e(TAG, "getFileSettings File 01 Exception: " + e.getMessage());
+                        writeToUiAppend(output, "getFileSettings File 01 Exception: " + e.getMessage());
+                    }
+                    if (fileSettings01 == null) {
+                        Log.e(TAG, "getFileSettings File 01 Error, Operation aborted");
+                        writeToUiAppend(output, "getFileSettings File 01 Error, Operation aborted");
+                        return;
+                    }
+                    fileSettings01.readPerm = ACCESS_EVERYONE;
+                    // write the file setings
+                    try {
+                        ChangeFileSettings.run(dnaC, CC_FILE_NUMBER, fileSettings01);
+                    } catch (IOException e) {
+                        Log.e(TAG, "ChangeFileSettings IOException: " + e.getMessage());
+                        writeToUiAppend(output, "ChangeFileSettings File 01 Error, Operation aborted");
+                        return;
+                    }
+                    writeToUiAppend(output, "File 01h Change File Settings SUCCESS");
 
                     // write URL template to file 02
                     SDMSettings sdmSettings = new SDMSettings();
