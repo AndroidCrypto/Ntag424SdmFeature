@@ -3,11 +3,9 @@
 This is the accompanying app to my articles **Demystify the Secure Dynamic Message with NTAG 424 DNA NFC tags (Android/Java) Parts 1 and 2**,
 available here:
 
-Part 1:
+Part 1: https://medium.com/@androidcrypto/demystify-the-secure-dynamic-message-with-ntag-424-dna-nfc-tags-android-java-part-1-b947c482913c
 
-Part 2:
-
-https://medium.com/@androidcrypto/demystify-the-secure-unique-number-feature-with-ntag-424-dna-nfc-tags-android-java-b947c482913c
+Part 2: https://medium.com/@androidcrypto/demystify-the-secure-dynamic-message-with-ntag-424-dna-nfc-tags-android-java-part-2-1f8878faa928
 
 ## Overview
 
