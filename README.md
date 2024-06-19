@@ -27,7 +27,7 @@ In the documentation you will find two namings for the same feature:
 - **Secure Dynamic Message** ("SDM")
 - **Secure Unique Number** ("SUN")
 
-## Technical information's about NTAG 424 DNA tags
+## Technical informations about NTAG 424 DNA tags
 
 In this document I'm always writing "NTAG 424 DNA" but there are "NTAG 424 DNA Tag Tamper" available as 
 well. The SDM/SUN feature is working on both tag types.
@@ -52,7 +52,7 @@ The tags are using the **AES authentication** on default (fabric), but the authe
 one-time-change that cannot get reversed.
 
 This app can work with both authentication modes, but does not have an option to change the mode from AES to LRP (but the underlying library has a function
-for this).
+for this, see the documentation).
 
 ### Default content of file 1 (Capability Container)
 
@@ -80,14 +80,6 @@ delivery it will hold following content:
 This content is written to the  file 1:
 
 ```plaintext
-Default (fabric):
-byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000000506E10500808283000000000000000000");
-
-Read Only:
-byte[] NDEF_FILE_01_CAPABILITY_CONTAINER_DEFAULT = Utils.hexStringToByteArray("001720010000FF0406E104010000FF0506E10500808283000000000000000000");
-
-byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("001720010000ff0406E10401000000");
-
 Original CC with Read and Write Access
 byte[] NDEF_FILE_01_CAPABILITY_CONTAINER = Utils.hexStringToByteArray("000F20003A00340406E10401000000");
 
@@ -106,7 +98,7 @@ https://sdm.nfcdeveloper.com/tagpt?uid=**************&ctr=******&cmac=**********
 
 When the prepared tag is tapped to a NFC reader (on a smartphone) the system will recognise that the NDEF data are an URL, 
 so the system will forward the data to a browser and open the website **https://sdm.nfcdeveloper.com/tagpt**. As you can see 
-the parameter "uid", "ctr" and "cmac" are filled with placeholders ("**...") so the "Secure Dynamic Messaging Backend Server Demo" 
+the parameter "uid", "ctr" and "cmac" are filled with placeholders ("**..."), so the "Secure Dynamic Messaging Backend Server Demo" 
 is giving an error message ("400 Bad Request: Failed to decode parameters").
 
 If the SUN/SDM feature is enabled you will get the "real" tag data and a positive test result.
@@ -180,6 +172,18 @@ Btw.: the named website is run by "Arx Research, Inc.". The source code is avail
 **SDM File Read Access Key**: 04h (used for Encryption of File data and CMAC calculation)
 
 **SDM Counter Retrieve Access Key**: 04h
+
+## About this app:
+
+It is developed using Android Studio version Jellyfish | 2023.3.1 Patch 2 and is running on SDK 21 to 34 (Android 14) (tested on
+Android 8, 9 and 13 with real devices).
+
+Some notes on typical sessions with the card: I recommend that you lay your phone on the tag and after the connection don't move the phone to hold the
+connection.
+
+## Ready to use compiled and build debug app
+
+A ready to use app in DEBUG mode is available under the debug folder.
 
 ## Dependencies
 
